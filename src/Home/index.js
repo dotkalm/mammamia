@@ -42,6 +42,7 @@ const Home = (props) => {
         { props.user.city ? ` Welcome from ${props.user.city}` : 'where r u from?'} 
         PIN GOES HERE
         Search LOCALLY
+        MEET UP
         SHIP
         <div> CLICK DIS </div>
         </HomeStyle>
