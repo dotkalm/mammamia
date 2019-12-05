@@ -1,35 +1,66 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { withFirebase } from '../Firebase'
-import { SignUpStyle } from './style.js'
-
+import { SignUpStyle, ImgContainer } from './style.js'
+import * as ROUTES from '../constants/routes'
 
 const SignUpFormBase = (props) => {
+
     const [user, setUser] = useState({
         username:'',
         passwordOne:'',
         passwordTwo:'',
         email:'',
+        uid:'',
         error:''});
+
+    const [ ip, setIp ] = useState('')
+
+    const [ coords, setCoords ] = useState({
+        accuracy: '',
+        latitude: '',
+        longitude: '',
+    })
     
     const onChange = event => {
         setUser({...user, [event.target.name]: event.target.value})
-        console.log(user)
     }
+    if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(function(position){
+                setCoords({
+                    accuracy: position.coords.accuracy,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    })
+            })
+        }
+
+    useEffect(() => {
+        fetch('https://jsonip.com').then(function(response){
+            return response.json()
+        }).then(function(response) {
+                setIp(response.ip)
+                return response.ip
+            })
+    })
 
     const onSubmit = event => {
         const { username, email, passwordOne } = user
         event.preventDefault()
-        
+        console.log(ip, coords) 
         props.firebase.doCreateUserWithEmailAndPassword(email, passwordOne)
         .then(authUser => {
-            console.log(authUser.user.uid)
+            props.grabUid(user, authUser.user.uid, coords, ip)
+            return authUser.user.uid})
+        .then(uid => {
         return props.firebase.db.collection('users')
-            .doc(authUser.user.uid).set({
+            .doc(uid).set({
                 username,
                 email
             })
-        }) 
+        }).then(
+            props.history.push(ROUTES.HOME)
+        )
 
         .catch(error => {
             setUser({...user, [error]:error})
@@ -43,7 +74,15 @@ const SignUpFormBase = (props) => {
         user.username === ''
 
     return(
+    <ImgContainer>
+        <div id="eek">
+            <div id="box">
+                <img src="./61155_BCW.jpg" alt="placeholder box"/>
+            </div>
+            SIGN UP
+        </div>
     <SignUpStyle>
+
         <form onSubmit={onSubmit}>
             <input name='username'
                 value={user.username}
@@ -85,7 +124,7 @@ const SignUpFormBase = (props) => {
         
         </form>
     </SignUpStyle>
-    
+    </ImgContainer>
     )
 
 

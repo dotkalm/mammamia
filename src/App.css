@@ -20,3 +20,16 @@
 .App-link {
   color: #09d3ac;
 }
+#eek{
+        width: 100%;
+        text-align: center;
+    }
+    #box{
+        margin:1rem auto; 
+        width:20%;
+        img{
+            width:100%;
+            margin: auto;
+        }
+    }
+
