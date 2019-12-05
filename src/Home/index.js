@@ -40,7 +40,9 @@ const Home = (props) => {
         { user.username || props.user.username ? `WELCOME ${user.username || props.user.username}` : 'wowow'
         }            
         { props.user.city ? ` Welcome from ${props.user.city}` : 'where r u from?'} 
-        
+        PIN GOES HERE
+        Search LOCALLY
+        SHIP
         <div> CLICK DIS </div>
         </HomeStyle>
 
