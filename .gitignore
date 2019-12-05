@@ -7,12 +7,14 @@
 
 # testing
 /coverage
-.env.development
-.env.production
 # production
 /build
 
 # misc
+.env.development
+.env.production
+.development
+.production
 .DS_Store
 .env.local
 .env.development.local
