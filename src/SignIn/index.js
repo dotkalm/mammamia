@@ -13,19 +13,28 @@ const SignIn = (props) => {
     const onChange = event => {
         setUser({...user, [event.target.name]: event.target.value})
     }
-    
+
     const onClick = event => {
         props.history.push(ROUTES.SIGN_UP)
     }
-    const onSubmit = event => {
+    const onSubmit = async event => {
         const { email, password } = user
         event.preventDefault()
         props.firebase.doSignInWithEmailAndPassword(email, password)
         .then(authUser => {
-            setUser({...user, uid: authUser.user.uid})
             return authUser.user.uid
         })
-        .then(uid => props.onSubmit(uid))
+        .then(uid => {
+            props.onSubmit(uid)
+            return uid
+        })
+        .then(uid => {
+            return props.firebase.db.collection('users').doc(uid).get()
+        })
+        .then(async function(doc){
+            console.log(doc.data())
+            return doc.data()
+        })
         .catch(err => console.log(err))
     }
     return(

@@ -56,7 +56,8 @@ const SignUpFormBase = (props) => {
         return props.firebase.db.collection('users')
             .doc(uid).set({
                 username,
-                email
+                email,
+                ip
             })
         }).then(
             props.history.push(ROUTES.HOME)

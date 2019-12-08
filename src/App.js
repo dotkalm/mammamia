@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter, Route, Switch } from 'react-router-dom'
 import * as ROUTES from './constants/routes'
 import SignUp from './Register'
 import SignIn from './SignIn'
 import Home from './Home'
-
 function App(props) {
-
+    const [dims, setDim] = useState({width: window.innerWidth, height: window.innerHeight})
     const [ uid, setUid ] = useState('')
     const [ truth, setTruth ] = useState(false)
     const [user, setUser ] = useState({
@@ -17,8 +16,8 @@ function App(props) {
         lat: '',
         lng: ''
     }) 
-    
-    function setUserSynchronous(id, lat, lng, city, state, ip_address, username, uid, email) {
+    function setUserSynchronous(response) {
+        const { id, lat, lng, city, state, ip_address, username, uid, email } = response
         return new Promise(resolve => {
             setTruth(true)
             setUser({
@@ -33,7 +32,7 @@ function App(props) {
                 uid: uid,
                 email: email
             })
-        }) 
+        })
     }
     const grabUid = async (user1, uid, coords, ip) => {
         setUser({...user,
@@ -51,31 +50,53 @@ function App(props) {
         }
         try{
                 const registerResponse = await fetch(`${
-                process.env.REACT_APP_BACKEND_URL}/user/register`, {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify(data),
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-            })
+                    process.env.REACT_APP_BACKEND_URL}/user/register`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: JSON.stringify(data),
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                })
             const response = await registerResponse.json()
-            const { id, lat, lng, city, state, ip_address, username, uid, email } = response.data
-            await setUserSynchronous(id, lat, lng, city, state, ip_address, username, uid, email)
+            await setUserSynchronous(response.data)
             return  
         } catch(err){
             console.log(err)
         }
     }
 
-    console.log(user, truth)
-
-    const onSubmitSignIn = (uid) => {
-        setUid(uid)
-        console.log(uid)
-        props.history.push(ROUTES.HOME)
+    const onSubmitSignIn = async (uid1) => {
+        setUid(uid1)
+        console.log(uid1,truth)
+        try{
+            const registerResponse = await fetch(`${
+                process.env.REACT_APP_BACKEND_URL}/user/logIn`, {
+                method: 'POST',
+                credentials: 'include',
+                body: JSON.stringify(uid1),
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+            })
+            const response = await registerResponse.json()
+            await setUserSynchronous(response.data[0]).then(
+                props.history.push(ROUTES.HOME)
+            )
+            return
+        }catch(error){
+            console.log(error) 
+        }
 
     } 
+
+    useEffect(() => {
+        const handleResize = () => setDim({width: window.innerWidth, height: window.innerHeight});
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    });
 
   return (
       <main>
@@ -94,9 +115,12 @@ function App(props) {
             <Route exact path={ROUTES.HOME}
                 render={(props) => {
                     return<Home
-                        user={user}
-                        uid={uid}/>
+                            user={user} 
+                            uid={uid}
+                            dims={dims}
+                          />
                 }}/>
+
         </Switch>
       </main>
   );
