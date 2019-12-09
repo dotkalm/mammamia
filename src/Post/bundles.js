@@ -3,10 +3,9 @@ import { BundlesStyle } from './style'
 import * as CATEGORIES from '../constants/selectorCategories.js'
 
 const Bundles = (props) => {
-    const [error, setError] = useState(false)
-    const [errorMsg, setErrorMsg] = useState('')
+    //const [error, setError] = useState(false)
+    //const [errorMsg, setErrorMsg] = useState('')
     const [images, setImages] = useState([])
-    const [test, setTest] = useState([])
     const [ form, setForm ] = useState({
         images: [],
         age: '',
@@ -15,7 +14,6 @@ const Bundles = (props) => {
     })
     const onSubmit = event => {
         event.preventDefault()
-        console.log(form, test)
     }
     const handleFormImages = (arr) => {
         const imgs = form.images
@@ -33,7 +31,6 @@ const Bundles = (props) => {
             newImgArrayFormData[i] = arr[i]
             if(i+1 === arr.length){
                 setForm({...form, images:[...imgs, ...newImgArrayFormData]}) 
-                setTest([...test, ...newImgArrayFormData])
             }
         }  
 
@@ -42,15 +39,10 @@ const Bundles = (props) => {
         if(event.target.name ==='image'){
             const { files } = event.target
             const filesArr = [...files]
-            if(images.length > 10){
-                setError(true)
-                setErrorMsg('File Limit Reached')
-            } else {
-                const num = 10 - images.length
-                console.log(num)
-                const spliceArr = filesArr.splice(0, num);
-                handleFormImages(spliceArr)
-            }
+            const num = 10 - images.length
+            console.log(num)
+            const spliceArr = filesArr.splice(0, num);
+            handleFormImages(spliceArr)
         }else{
            setForm({ ...form, 
                [event.target.name]: event.target.value
@@ -91,7 +83,6 @@ const Bundles = (props) => {
                     })}
                     <label className="select" id="custom-file-upload">
                        {images.length > 0 ? 'Add Another Photo' : 'Add Photo'}
-                       {error && errorMsg}
                         <input className="select" name='image' type='file' 
                         multiple onChange={onChange}/>
                     </label>
