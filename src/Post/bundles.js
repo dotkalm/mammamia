@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { BundlesStyle } from './style'
+import { BundlesStyle, ThumbnailDiv } from './style'
 import * as CATEGORIES from '../constants/selectorCategories.js'
 
 const Bundles = (props) => {
     //const [error, setError] = useState(false)
     //const [errorMsg, setErrorMsg] = useState('')
     const [images, setImages] = useState([])
+    const [addImageButton, setAddImageButton] = useState('Add Photos')
     const [ form, setForm ] = useState({
         images: [],
         age: '',
@@ -25,6 +26,9 @@ const Bundles = (props) => {
             reader.onload = () => {
                 newImgArray[i] = reader.result
                 if(i+1 === arr.length){
+                    if(arr.length + images.length === 10){
+                        setAddImageButton('Photo Limit Reached')
+                    }
                     setImages([...images, ...newImgArray])
                 }
             } 
@@ -40,7 +44,6 @@ const Bundles = (props) => {
             const { files } = event.target
             const filesArr = [...files]
             const num = 10 - images.length
-            console.log(num)
             const spliceArr = filesArr.splice(0, num);
             handleFormImages(spliceArr)
         }else{
@@ -49,7 +52,6 @@ const Bundles = (props) => {
            })
         } 
     }
-           
     return(
         <BundlesStyle>
         <div id="description">
@@ -75,14 +77,19 @@ const Bundles = (props) => {
                         )
                     })} 
                     </select>
-                    {images.map((e,i) => {
-                        return(
+                    <ThumbnailDiv>
+                        {images.map((e,i) => {
+                            return(
 
-                       <label key={i+1}> <img src={`${e}`} alt={`${i+1}`} key={i}/> {i+1}</label>
-                        )
-                    })}
+                           <label id="img-thumb" key={i+1}> 
+                                <img src={`${e}`} alt={`${i+1}`} key={i}/> 
+                                {i+1}
+                           </label>
+                            )
+                        })}
+                    </ThumbnailDiv>
                     <label className="select" id="custom-file-upload">
-                       {images.length > 0 ? 'Add Another Photo' : 'Add Photo'}
+                        {addImageButton}
                         <input className="select" name='image' type='file' 
                         multiple onChange={onChange}/>
                     </label>

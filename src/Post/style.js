@@ -1,29 +1,51 @@
 import styled from 'styled-components'
 
+export const ThumbnailDiv = styled.div`
+    display: grid;
+    grid:repeat(3, 80px);
+    width: 100%;
+    label{
+        grid-column: ${props => props.col ? props.col :10};
+        grid-row: ${props => props.row ? props.row :0};
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        border: 1px solid #aaa;
+    }
+    img{
+        display: inline-block;
+        max-width: 40px;
+        max-height; 40px;
+        @media screen and (max-width: 500px){
+            max-width: 30px;
+            max-height; 30px;
+        }
+    }
+`
+
 export const BundlesStyle = styled.div`
     padding-left: 20%;
     padding-right: 20%;
     padding-top: 2rem;
     #description{
+        font-weight: 700;
         font-size: .8rem;
         text-align: center;
         background-color: pink;
         height: 100%;
-        width: 100%;
+        width: 90%;
         border: 1px solid hotpink;
         border-radius: 1rem;
+        #margin: 1rem, 1rem, 2rem, 1rem;
+        padding-bottom: 2%;
+        padding-top: 2%;
+        padding-right: 5%;
+        padding-left: 5%;
         margin-bottom: 2rem;
     }
     .form{
-        img{
-            max-width: 80px;
-            max-height; 80px;
-            @media screen and (max-width: 500px){
-                max-width: 30px;
-                max-height; 30px;
-            }
-        }
         form{
+
             .select{
                 display: block;
                 font-size: 16px;
@@ -132,6 +154,7 @@ export const CategoryStyles = styled.div`
                # height: 10%;
             }
             .button-name{
+                font-weight: 700;
                 font-size: 1.5rem;
                 @media screen and (max-width: 500px){
                     font-size: .8rem;
