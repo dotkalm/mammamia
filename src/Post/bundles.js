@@ -3,6 +3,10 @@ import { BundlesStyle } from './style'
 import * as CATEGORIES from '../constants/selectorCategories.js'
 
 const Bundles = (props) => {
+    const [error, setError] = useState(false)
+    const [errorMsg, setErrorMsg] = useState('')
+    const [images, setImages] = useState([])
+    const [test, setTest] = useState([])
     const [ form, setForm ] = useState({
         images: [],
         age: '',
@@ -11,13 +15,42 @@ const Bundles = (props) => {
     })
     const onSubmit = event => {
         event.preventDefault()
-        console.log(form)
+        console.log(form, test)
+    }
+    const handleFormImages = (arr) => {
+        const imgs = form.images
+        const newImgArray = new Array(arr.length).fill('BLOB')
+        const newImgArrayFormData = new Array(arr.length).fill('BLOB_RAW')
+        for(let i=0; i<arr.length; i++){
+            const reader = new FileReader()
+            reader.readAsDataURL(arr[i])
+            reader.onload = () => {
+                newImgArray[i] = reader.result
+                if(i+1 === arr.length){
+                    setImages([...images, ...newImgArray])
+                }
+            } 
+            newImgArrayFormData[i] = arr[i]
+            if(i+1 === arr.length){
+                setForm({...form, images:[...imgs, ...newImgArrayFormData]}) 
+                setTest([...test, ...newImgArrayFormData])
+            }
+        }  
+
     }
     const onChange = event => {
         if(event.target.name ==='image'){
-           const imgs = form.images
-           console.log(event.target.files) 
-           setForm({...form, images:[...imgs, event.target.files[0]]}) 
+            const { files } = event.target
+            const filesArr = [...files]
+            if(images.length > 10){
+                setError(true)
+                setErrorMsg('File Limit Reached')
+            } else {
+                const num = 10 - images.length
+                console.log(num)
+                const spliceArr = filesArr.splice(0, num);
+                handleFormImages(spliceArr)
+            }
         }else{
            setForm({ ...form, 
                [event.target.name]: event.target.value
@@ -50,24 +83,17 @@ const Bundles = (props) => {
                         )
                     })} 
                     </select>
-                    {form.images.map((e,i) => {
-                        const read = async () => {}
-                        const reader = new FileReader()
-                        reader.readAsDataURL(e)
-                        let theImage = ''
-                        reader.onloadend = () => {
-                            theImage = reader.result             
-                            console.log(theImage)
-                        } 
+                    {images.map((e,i) => {
                         return(
 
-                        <img src={`${theImage}`} alt={`user uploaded image # ${i+1}`} key={i}/>
+                       <label key={i+1}> <img src={`${e}`} alt={`${i+1}`} key={i}/> {i+1}</label>
                         )
                     })}
                     <label className="select" id="custom-file-upload">
-                        Add Photo
+                       {images.length > 0 ? 'Add Another Photo' : 'Add Photo'}
+                       {error && errorMsg}
                         <input className="select" name='image' type='file' 
-                        onChange={onChange}/>
+                        multiple onChange={onChange}/>
                     </label>
                     <input type='text' className='select' 
                         name="description" placeholder='add description' 

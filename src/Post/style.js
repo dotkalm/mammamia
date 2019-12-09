@@ -15,6 +15,14 @@ export const BundlesStyle = styled.div`
         margin-bottom: 2rem;
     }
     .form{
+        img{
+            max-width: 80px;
+            max-height; 80px;
+            @media screen and (max-width: 500px){
+                max-width: 30px;
+                max-height; 30px;
+            }
+        }
         form{
             .select{
                 display: block;

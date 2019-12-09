@@ -5,7 +5,7 @@ import { MainContentStyle } from './style'
 import Post from '../Post'
 import NavBar from '../NavBar'
 import Selector from './Selector'
-import Sorters from './Sorters'
+//import Sorters from './Sorters'
 
 const Home = (props) => {
     const [ uiButton, setUIButton] = useState({
