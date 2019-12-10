@@ -4,13 +4,15 @@ import { BundlesStyle,
     ThumbnailLabelGroup } from './style'
 import * as CATEGORIES from '../constants/selectorCategories.js'
 
+
+const imageData = {} 
 const Bundles = (props) => {
     const gridCoords = {}
     //const [error, setError] = useState(false)
     //const [errorMsg, setErrorMsg] = useState('')
     //const [coordsBool, setCoordsBool] = useState(true)
     const [thumbGrid, setThumbGrid] = useState({})
-    const [images, setImages] = useState([])
+    const [imageRefs, setImageRefs] = useState([])
     const [addImageButton, setAddImageButton] = useState('Add Photos')
     const [ form, setForm ] = useState({
         images: [],
@@ -44,17 +46,23 @@ const Bundles = (props) => {
         const newImgArray = new Array(arr.length).fill('BLOB')
         const newImgArrayFormData = new Array(arr.length).fill('BLOB_RAW')
         for(let i=0; i<arr.length; i++){
+            //need to refactor this so that it is an object not an array
+            //this array is too slow when it comes to removing items
             coordsFunc(i)
+            const cryptoRandomString = require('crypto-random-string');
+            const randKey = cryptoRandomString({length: 10}); 
+            console.log(randKey)
             const reader = new FileReader()
             reader.readAsDataURL(arr[i])
             reader.onload = () => {
-                newImgArray[i] = reader.result
+                imageData[randKey] = reader.result
+                newImgArray[i] = randKey 
                 if(i+1 === arr.length){
-                    if(arr.length + images.length === 10){
+                    if(arr.length + imageRefs.length === 10){
                         setAddImageButton('Photo Limit Reached')
                     }
                     setThumbGrid(gridCoords)
-                    setImages([...images, ...newImgArray])
+                    setImageRefs([...imageRefs, ...newImgArray])
                 }
             } 
             newImgArrayFormData[i] = arr[i]
@@ -68,7 +76,7 @@ const Bundles = (props) => {
         if(event.target.name ==='image'){
             const { files } = event.target
             const filesArr = [...files]
-            const num = 10 - images.length
+            const num = 10 - imageRefs.length
             const spliceArr = filesArr.splice(0, num);
             handleFormImages(spliceArr)
         }else{
@@ -78,14 +86,16 @@ const Bundles = (props) => {
         } 
     }
     const onClickX = event => {
+        console.log(imageData)
+        console.log(imageRefs)
         const indexNum = +event.target.id
-        console.log(form.images, indexNum) 
-        const copyDataImages = [...images]
+        const copyDataImages = [...imageRefs]
         const copyImages = [...form.images]
         copyImages.splice(indexNum, 1)
         copyDataImages.splice(indexNum, 1)
-        setForm({...form, [images]: copyImages})
-        setImages(copyDataImages)
+        setForm({...form, images: copyImages})
+        setImageRefs(copyDataImages)
+        setAddImageButton('Add Photos')
 
 
     }
@@ -117,15 +127,15 @@ const Bundles = (props) => {
                     })} 
                     </select>
                     <ThumbnailDiv>
-                        {images.map((e,i) => {
+                        {imageRefs.map((e,i) => {
                             const coords = (thumbGrid[i+1])
                             const col = coords[0]
                             const row = coords[1]
                             return(
-                            <ThumbnailLabelGroup key={i} img={`url(${e})`}
+                            <ThumbnailLabelGroup key={i} img={`url(${imageData[e]})`}
                                 row={row} col={col} >
                                 <label id="lbl" key={i+1}>
-                                <div key={i} id={i} onClick={onClickX}>X</div>
+                                <div key={e} id={i} onClick={onClickX}>X</div>
                                 </label>
                            </ThumbnailLabelGroup>
                             )
