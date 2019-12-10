@@ -5,13 +5,15 @@ import { BundlesStyle,
 import * as CATEGORIES from '../constants/selectorCategories.js'
 
 
-const imageData = {} 
+const imageData = {}
+let thumbGrid = null
+
 const Bundles = (props) => {
     const gridCoords = {}
     //const [error, setError] = useState(false)
     //const [errorMsg, setErrorMsg] = useState('')
     //const [coordsBool, setCoordsBool] = useState(true)
-    const [thumbGrid, setThumbGrid] = useState({})
+  //  const [thumbGrid, setThumbGrid] = useState({})
     const [imageRefs, setImageRefs] = useState([])
     const [addImageButton, setAddImageButton] = useState('Add Photos')
     const [ form, setForm ] = useState({
@@ -23,23 +25,7 @@ const Bundles = (props) => {
     const onSubmit = event => {
         event.preventDefault()
     }
-    const coordsFunc = (i) => {
-        const len = Object.keys(gridCoords).length
-        if(len === 0){
-            gridCoords[i+1] = [1,1]
-        } else {
-            const prevIndex = Object.keys(gridCoords)[len - 1]
-            const prevCoords = gridCoords[prevIndex]
-            const currX = prevCoords[0] + 1
-            const currY = prevCoords[1] 
-            if(currX > 3){
-                const nextY = currY + 1
-                gridCoords[i+1] = [1, nextY]
-            }else{
-                gridCoords[i+1] = [currX,currY]
-            }
-        }
-    }
+
 
     const handleFormImages = (arr) => {
         const imgs = form.images
@@ -48,27 +34,24 @@ const Bundles = (props) => {
         for(let i=0; i<arr.length; i++){
             //need to refactor this so that it is an object not an array
             //this array is too slow when it comes to removing items
-            coordsFunc(i)
             const cryptoRandomString = require('crypto-random-string');
             const randKey = cryptoRandomString({length: 10}); 
-            console.log(randKey)
+           // console.log(randKey)
             const reader = new FileReader()
             reader.readAsDataURL(arr[i])
             reader.onload = () => {
-                imageData[randKey] = reader.result
+                imageData[randKey] = {
+                    thumb: reader.result,
+                    raw: arr[i]}
                 newImgArray[i] = randKey 
                 if(i+1 === arr.length){
                     if(arr.length + imageRefs.length === 10){
                         setAddImageButton('Photo Limit Reached')
                     }
-                    setThumbGrid(gridCoords)
+                    //setThumbGrid(gridCoords)
                     setImageRefs([...imageRefs, ...newImgArray])
                 }
             } 
-            newImgArrayFormData[i] = arr[i]
-            if(i+1 === arr.length){
-                setForm({...form, images:[...imgs, ...newImgArrayFormData]}) 
-            }
         }  
 
     }
@@ -99,6 +82,22 @@ const Bundles = (props) => {
 
 
     }
+    const getCoords = (num) => {
+        if(num === 0){
+            thumbGrid = {
+                [num] : [1,1]
+            }
+        } else if(thumbGrid[num-1][0] === 3){
+           const x = 1
+           const y = thumbGrid[num-1][1] + 1
+           thumbGrid[num] = [x,y]   
+        }else{
+           const x = thumbGrid[num-1][0] + 1
+           const y = thumbGrid[num-1][1] 
+           thumbGrid[num] = [x,y] 
+        } 
+        return thumbGrid[num]
+    }
     //console.log(props.dims)
     //add function to make thumb-columns responsed to width
     return(
@@ -128,11 +127,11 @@ const Bundles = (props) => {
                     </select>
                     <ThumbnailDiv>
                         {imageRefs.map((e,i) => {
-                            const coords = (thumbGrid[i+1])
+                            const coords = getCoords(i)
                             const col = coords[0]
                             const row = coords[1]
                             return(
-                            <ThumbnailLabelGroup key={i} img={`url(${imageData[e]})`}
+                            <ThumbnailLabelGroup key={i} img={`url(${imageData[e].thumb})`}
                                 row={row} col={col} >
                                 <label id="lbl" key={i+1}>
                                 <div key={e} id={i} onClick={onClickX}>X</div>
