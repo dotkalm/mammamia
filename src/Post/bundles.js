@@ -35,6 +35,7 @@ const Bundles = (props) => {
         console.log(newImgArray)
         const newImgArrayFormData = new Array(arr.length).fill('BLOB_RAW')
         for(let i=0; i<arr.length; i++){
+            console.log(Math.ceil(arr[i].size/1000), " kbytes")
             //need to refactor this so that it is an object not an array
             //this array is too slow when it comes to removing items
             const cryptoRandomString = require('crypto-random-string');
@@ -52,7 +53,11 @@ const Bundles = (props) => {
                     //setThumbGrid(gridCoords)
                     setImageRefs([...imageRefs, ...newImgArray])
                 }
-            } 
+            }
+            newImgArrayFormData[i] = arr[i]
+            if(i+1 === arr.length){
+                setForm({...form, images:[...imgs, ...newImgArrayFormData]}) 
+            }
         }  
 
     }
@@ -70,9 +75,10 @@ const Bundles = (props) => {
         } 
     }
     const onClickX = event => {
+        const indexNum = +event.target.id
+        delete imageData[imageRefs[indexNum]]
         console.log(imageData)
         console.log(imageRefs)
-        const indexNum = +event.target.id
         console.log(indexNum)
         const copyDataImages = [...imageRefs]
         const copyImages = [...form.images]
