@@ -1,26 +1,32 @@
 import styled from 'styled-components'
 
+export const ThumbnailLabelGroup = styled.div`
+    grid-column: ${props => props.col ? props.col : 'auto'};
+    grid-row: ${props => props.row ? props.row : 'auto'};
+    display: inline-block;
+    height: 4rem;
+    margin: auto;
+    width: 4rem;
+    background-size: 100%;
+    background-image: ${props => props.img ? props.img : 'auto'};
+    #lbl{
+        text-align: center;
+        display: inline-block;
+        position: absolute;
+        transform: translate(-20px, 0px);
+        float: right;
+    }
+    div{
+        float: right;
+        background-color: yellow;
+        transform: translate(75px, 0px);
+    }
+`
+
 export const ThumbnailDiv = styled.div`
     display: grid;
-    grid:repeat(3, 80px);
     width: 100%;
-    label{
-        grid-column: ${props => props.col ? props.col :10};
-        grid-row: ${props => props.row ? props.row :0};
-        display: inline-block;
-        width: 80px;
-        height: 80px;
-        border: 1px solid #aaa;
-    }
-    img{
-        display: inline-block;
-        max-width: 40px;
-        max-height; 40px;
-        @media screen and (max-width: 500px){
-            max-width: 30px;
-            max-height; 30px;
-        }
-    }
+    margin: auto;
 `
 
 export const BundlesStyle = styled.div`
