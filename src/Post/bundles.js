@@ -24,12 +24,15 @@ const Bundles = (props) => {
     })
     const onSubmit = event => {
         event.preventDefault()
+        console.log(imageData)
     }
 
 
     const handleFormImages = (arr) => {
+        console.log(arr.length)
         const imgs = form.images
         const newImgArray = new Array(arr.length).fill('BLOB')
+        console.log(newImgArray)
         const newImgArrayFormData = new Array(arr.length).fill('BLOB_RAW')
         for(let i=0; i<arr.length; i++){
             //need to refactor this so that it is an object not an array
@@ -37,13 +40,11 @@ const Bundles = (props) => {
             const cryptoRandomString = require('crypto-random-string');
             const randKey = cryptoRandomString({length: 10}); 
            // console.log(randKey)
+            newImgArray[i] = randKey 
             const reader = new FileReader()
             reader.readAsDataURL(arr[i])
             reader.onload = () => {
-                imageData[randKey] = {
-                    thumb: reader.result,
-                    raw: arr[i]}
-                newImgArray[i] = randKey 
+                imageData[randKey] = reader.result 
                 if(i+1 === arr.length){
                     if(arr.length + imageRefs.length === 10){
                         setAddImageButton('Photo Limit Reached')
@@ -72,6 +73,7 @@ const Bundles = (props) => {
         console.log(imageData)
         console.log(imageRefs)
         const indexNum = +event.target.id
+        console.log(indexNum)
         const copyDataImages = [...imageRefs]
         const copyImages = [...form.images]
         copyImages.splice(indexNum, 1)
@@ -100,6 +102,7 @@ const Bundles = (props) => {
     }
     //console.log(props.dims)
     //add function to make thumb-columns responsed to width
+
     return(
         <BundlesStyle>
         <div id="description">
@@ -130,8 +133,9 @@ const Bundles = (props) => {
                             const coords = getCoords(i)
                             const col = coords[0]
                             const row = coords[1]
+                            const thumb = imageData[e]
                             return(
-                            <ThumbnailLabelGroup key={i} img={`url(${imageData[e].thumb})`}
+                            <ThumbnailLabelGroup key={i} img={`url(${thumb})`}
                                 row={row} col={col} >
                                 <label id="lbl" key={i+1}>
                                 <div key={e} id={i} onClick={onClickX}>X</div>
