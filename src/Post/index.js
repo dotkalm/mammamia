@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { StylePost } from './style'
 import Categories from './categories'
 import Bundles from './bundles'
+
 const Post = (props) => {
     const [ category, setCategory ] = useState('')
     const onClick = event => {
@@ -12,6 +13,7 @@ const Post = (props) => {
         }
     }
     return(
+<div>
     <StylePost> 
         <div className='selling'>
             <span className="sellling_spacer"> 
@@ -21,8 +23,12 @@ const Post = (props) => {
             <span className="sellling_spacer"></span>
         </div>
         {category === ''? <Categories dims={props.dims} onClick={onClick}/> : '' }
-        {category === 'Baby Bundles' ? <Bundles user={props.user}/> : ''}
-    </StylePost>
+        {category === 'Baby Bundles' ?
+            <Bundles bundles={props.bundles}
+                updateBundles={props.updateBundles}
+                user={props.user}/> : ''}
+        </StylePost>
+    </div>
     )
 }
 

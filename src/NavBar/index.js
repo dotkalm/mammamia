@@ -6,9 +6,9 @@ import Pin from './pin'
 import Tag from './tag'
 import TagSelected from './tagSelected'
 import Sack from './sack'
+import { withRouter } from 'react-router-dom'
 
 const NavBar = (props) => {
-    
         return(
             <HomeStyle> 
                 <nav> 
@@ -16,8 +16,8 @@ const NavBar = (props) => {
                     {Person()}
                     </span>
                     <span className="top">
-                        <object className="top_1" name="tag" onClick={props.onClick} >
-                            {props.uiButton.tag ? TagSelected() : Tag()}
+                        <object className="top_1" name="post" onClick={props.onClick} >
+                            {props.uiButton.post ? TagSelected() : Tag()}
                         </object>
                         <span className="top_2">
                             {Mag()}
@@ -57,4 +57,4 @@ const NavBar = (props) => {
     )
 }
 
-export default NavBar
+export default withRouter(NavBar)

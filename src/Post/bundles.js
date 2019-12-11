@@ -4,6 +4,8 @@ import { BundlesStyle,
     ThumbnailLabelGroup } from './style'
 import * as CATEGORIES from '../constants/selectorCategories.js'
 import { withFirebase } from '../Firebase'
+import * as ROUTES from '../constants/routes'
+import { withRouter } from 'react-router-dom'
 
 const cryptoRandomString = require('crypto-random-string');
 const imageData = {}
@@ -16,6 +18,7 @@ const Bundles = (props) => {
     //const [errorMsg, setErrorMsg] = useState('')
     //const [coordsBool, setCoordsBool] = useState(true)
   //  const [thumbGrid, setThumbGrid] = useState({})
+    const [primary, setPrimary] = useState(0)
     const [imageRefs, setImageRefs] = useState([])
     const [addImageButton, setAddImageButton] = useState('Add Photos')
     const [ form, setForm ] = useState({
@@ -30,7 +33,10 @@ const Bundles = (props) => {
         const { uid } = props.firebase.auth.currentUser 
         const randKey = cryptoRandomString({length: 10})
         let userData = {}
-        props.firebase.db.collection('bundles').doc(randKey).set({
+        console.log(props.bundles)
+        const primaryKey = imageRefs[primary].name 
+        const primaryImage = firebaseURLs[primaryKey]
+        const newBundle = {
             firebaseURLs,
             age,
             gender,
@@ -38,18 +44,23 @@ const Bundles = (props) => {
             uid,
             imageRefs,
             available: 'yes',
-        })
+            primaryImage: primaryImage,
+        }
+        props.updateBundles(newBundle)
+        props.firebase.db.collection('bundles').doc(randKey).set(newBundle)
         props.firebase.db.collection("users").doc(uid).get()
             .then(function(doc){
                 userData = doc.data()
-                addDataToUser(userData, randKey, uid)
+                const prevBundles = userData.bundles
+                addDataToUser(userData, prevBundles, randKey, uid)
             })
         
 
     }
-    const addDataToUser = (userObj, randKey, uid) => {
+    const addDataToUser = (userObj, prevBundles, randKey, uid) => {
         props.firebase.db.collection("users").doc(uid)
-        .set({ ...userObj, bundles: [...userObj.bundles, randKey]})
+        .set({ ...userObj, bundles: [randKey, ...prevBundles]})
+        .then(props.history.push(ROUTES.HOME))
     }
     const resizeThumbWidth = () => {
         const wide = window.innerWidth
@@ -160,7 +171,9 @@ const Bundles = (props) => {
             window.removeEventListener('resize', handleResize);
         };
     });
-
+    const selectPrimary = event => {
+        setPrimary(+event.target.id)
+    }
     return(
         <BundlesStyle>
         <div id="description">
@@ -194,11 +207,13 @@ const Bundles = (props) => {
                             const col = coords[0]
                             const row = coords[1]
                             const thumb = imageData[e.name]
+
                             return(
-                            <ThumbnailLabelGroup key={i} img={`url(${thumb})`}
-                                row={row} col={col} >
-                                <label id="lbl" key={i+1}>
-                                <div key={e} id={i} onClick={onClickX}>X</div>
+                            <ThumbnailLabelGroup key={i} id={i} img={`url(${thumb})`}
+                                row={row} col={col} onClick={selectPrimary} 
+                                className={primary === i ? 'selected' : 'notSelected'}>
+                                    <label id="lbl" key={i+1}>
+                                    <div key={e} id={i} onClick={onClickX}>X</div>
                                 </label>
                            </ThumbnailLabelGroup>
                             )
@@ -222,4 +237,4 @@ const Bundles = (props) => {
     )
 }
 
-export default withFirebase(Bundles)
+export default withRouter(withFirebase(Bundles))

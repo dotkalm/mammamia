@@ -4,10 +4,20 @@ import * as ROUTES from './constants/routes'
 import SignUp from './Register'
 import SignIn from './SignIn'
 import Home from './Home'
+import Post from './Post'
+import NavBar from './NavBar'
+import { withFirebase } from './Firebase'
+
+let getUidOnce = true
+
 function App(props) {
+    const [ uiButton, setUIButton] = useState({
+        post: false,
+    })
     const [dims, setDim] = useState({width: window.innerWidth, height: window.innerHeight})
     const [ uid, setUid ] = useState('')
     const [ truth, setTruth ] = useState(false)
+    const [ bundles, setBundles ] = useState([])
     const [user, setUser ] = useState({
         username:'',
         email:'',
@@ -16,6 +26,39 @@ function App(props) {
         lat: '',
         lng: ''
     }) 
+    const [userBundles, setUserBundles] = useState([])
+    
+    props.firebase.auth.onAuthStateChanged((user) => {
+        if (user && getUidOnce) {
+            getUidOnce = false
+            getBundleRefs(user.uid)
+        }
+    })
+
+    const getBundleRefs = (uid) => {
+        props.firebase.db.collection("users").doc(uid).get()
+            .then(doc => doc.data().bundles)
+            .then(bundles => bundles.forEach((e,i,array) => {
+                const {length} = array
+                getBundles(e, i, length)
+            }))
+    }
+    let bundleObj = [] 
+    const getBundles = (id, i, len) => {
+        props.firebase.db.collection("bundles").doc(id).get()
+            .then(doc => {
+                console.log(doc.data())
+                if(i===0){
+                    bundleObj = [doc.data()]
+                } else if (i+1 === len){
+                    bundleObj = [...bundleObj, doc.data()]
+                    setBundles(bundleObj)
+                } else {
+                    bundleObj = [...bundleObj, doc.data()]
+                }
+            })
+    }
+
     function setUserSynchronous(response) {
         const { id, lat, lng, city, state, ip_address, username, uid, email } = response
         return new Promise(resolve => {
@@ -33,6 +76,10 @@ function App(props) {
                 email: email
             })
         })
+    }
+    const setTheBundles = (arr) => {
+        console.log(arr)
+        setUserBundles(arr)
     }
     const grabUid = async (user1, uid, coords, ip) => {
         setUser({...user,
@@ -101,8 +148,24 @@ function App(props) {
         };
     });
     
-  return (
+    const onSubmit = event => {
+        event.preventDefault()
+    }
+    const onClick = event => {
+        const booleanState = uiButton[event.currentTarget.name]
+        if (event.currentTarget.name === 'post' && !uiButton[event.currentTarget.name]){
+            props.history.push(ROUTES.POST)
+            setUIButton({...uiButton, [event.currentTarget.name]: true})
+        }
+    }
+
+    const updateBundles = (newBundle) => {
+        console.log(bundles, newBundle)
+        setBundles([newBundle, ...bundles])
+    }
+    return (
       <main>
+        <NavBar onSubmit={onSubmit} onClick={onClick} uiButton={uiButton}/>
         <Switch>
             <Route exact path={ROUTES.SIGN_UP}
                 render={(props) => {
@@ -122,6 +185,19 @@ function App(props) {
                             user={user} 
                             uid={uid}
                             dims={dims}
+                            userBundles={userBundles}
+                            setUserBundles={setUserBundles}
+                          />
+                }}/>
+            <Route exact path={ROUTES.POST}
+                render={(props) => {
+                    return<Post
+                            user={user} 
+                            uid={uid}
+                            dims={dims}
+                            updateBundles={updateBundles}
+                            setUserBundles={setUserBundles}
+                            userBundles={userBundles}
                           />
                 }}/>
 
@@ -130,4 +206,4 @@ function App(props) {
   );
 }
 
-export default withRouter(App);
+export default withRouter(withFirebase(App));

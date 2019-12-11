@@ -1,6 +1,12 @@
 import styled from 'styled-components'
 
 export const ThumbnailLabelGroup = styled.div`
+    &.notSelected{
+        border: rgb(255,255,255) 5px solid;
+    }
+    &.selected{
+        border: rgb(0,255,0) 5px solid;
+    }
     grid-column: ${props => props.col ? props.col : 'auto'};
     grid-row: ${props => props.row ? props.row : 'auto'};
     display: inline-block;
@@ -27,6 +33,7 @@ export const ThumbnailDiv = styled.div`
     display: grid;
     width: 100%;
     margin: auto;
+
 `
 
 export const BundlesStyle = styled.div`
