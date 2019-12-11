@@ -5,13 +5,13 @@ import { MainContentStyle } from './style'
 import Post from '../Post'
 import NavBar from '../NavBar'
 import Selector from './Selector'
+import UserBundles from './userBundles'
 
 const Home = (props) => {
     const [ uiButton, setUIButton] = useState({
         tag: false,
     })
     const [ truth, setTruth ] = useState(false)
-    const [ done, setDone ] = useState(true)
     const [ user, setUser ] = useState({ 
         username: props.user.username,
         email: '',
@@ -23,20 +23,6 @@ const Home = (props) => {
         ip: '',
     })
     
-    if(user.uid !== '' && done){
-        const docRef = props.firebase.db.collection("users").doc(user.uid) 
-        docRef.get().then(function(doc) {
-            if(doc.exists){
-                const userData = doc.data()
-                setUser({...user, username: userData.username,
-                email: userData.email})
-                setDone(false)
-            }
-            else{
-                console.log("not here")
-            }
-        })
-    }
     useEffect(() => {
         if(!truth){
             setUser({...props.user})
@@ -62,6 +48,7 @@ const Home = (props) => {
             { props.user.city ? ` Welcome from ${props.user.city}` : ''} 
             {uiButton.tag ? <Post user={props.user} dims={props.dims}/> : ''}
             </MainContentStyle>
+            <UserBundles/>
         </div>
 
     )

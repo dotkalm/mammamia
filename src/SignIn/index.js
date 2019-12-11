@@ -34,6 +34,7 @@ const SignIn = (props) => {
         .then(async function(doc){
             console.log(doc.data())
             props.passUserInfo(doc.data())
+            props.history.push(ROUTES.HOME)
             return doc.data()
         })
         .catch(err => console.log(err))
