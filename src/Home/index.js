@@ -11,6 +11,7 @@ const Home = (props) => {
     const [ uiButton, setUIButton] = useState({
         tag: false,
     })
+    const [ bundles, setBundles ] = useState([])
     const [ truth, setTruth ] = useState(false)
     const [ user, setUser ] = useState({ 
         username: props.user.username,
@@ -37,6 +38,9 @@ const Home = (props) => {
         const booleanState = uiButton[event.currentTarget.name]
         setUIButton({...uiButton, [event.currentTarget.name]: !booleanState})
     }
+    const getBundles = (arr) => {
+        setBundles([...bundles, arr])
+    }
         return(
         <div>
             <NavBar onSubmit={onSubmit} onClick={onClick} uiButton={uiButton}/>
@@ -48,7 +52,7 @@ const Home = (props) => {
             { props.user.city ? ` Welcome from ${props.user.city}` : ''} 
             {uiButton.tag ? <Post user={props.user} dims={props.dims}/> : ''}
             </MainContentStyle>
-            <UserBundles/>
+            <UserBundles bundles={bundles} getBundles={getBundles}/>
         </div>
 
     )

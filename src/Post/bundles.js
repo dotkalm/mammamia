@@ -49,7 +49,7 @@ const Bundles = (props) => {
     }
     const addDataToUser = (userObj, randKey, uid) => {
         props.firebase.db.collection("users").doc(uid)
-        .set({ ...userObj, bundles: [randKey]})
+        .set({ ...userObj, bundles: [...userObj.bundles, randKey]})
     }
     const resizeThumbWidth = () => {
         const wide = window.innerWidth

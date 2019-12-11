@@ -1,5 +1,16 @@
 import styled from 'styled-components'
 
+export const BundleStyle = styled.div`
+    background-image: ${props => props.img ? props.img : 'auto'};
+    background-size: cover;
+    height: 5rem;
+    width: 5rem;
+    border: 1px solid gray;
+    display: inline-block;
+    margin: 1rem;
+    
+`
+
 export const MainContentStyle = styled.div`
     background-color: white;
     width: 98%;
