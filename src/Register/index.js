@@ -47,7 +47,6 @@ const SignUpFormBase = (props) => {
     const onSubmit = event => {
         const { username, email, passwordOne } = user
         event.preventDefault()
-        console.log(ip, coords) 
         props.firebase.doCreateUserWithEmailAndPassword(email, passwordOne)
         .then(authUser => {
             props.grabUid(user, authUser.user.uid, coords, ip)

@@ -60,7 +60,7 @@ const Home = (props) => {
             { user.username || props.user.username ? `WELCOME ${user.username || props.user.username}` : ''
             }            
             { props.user.city ? ` Welcome from ${props.user.city}` : ''} 
-            {uiButton.tag ? <Post dims={props.dims}/> : ''}
+            {uiButton.tag ? <Post user={props.user} dims={props.dims}/> : ''}
             </MainContentStyle>
         </div>
 

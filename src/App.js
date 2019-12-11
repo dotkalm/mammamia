@@ -89,6 +89,9 @@ function App(props) {
         }
 
     } 
+    const passUserInfo = (data) => {
+        console.log(data)
+    }
 
     useEffect(() => {
         const handleResize = () => setDim({width: window.innerWidth, height: window.innerHeight});
@@ -97,7 +100,7 @@ function App(props) {
             window.removeEventListener('resize', handleResize);
         };
     });
-
+    
   return (
       <main>
         <Switch>
@@ -110,7 +113,8 @@ function App(props) {
             <Route exact path={ROUTES.SIGN_IN}
                 render={(props) => {
                     return<SignIn
-                        onSubmit={onSubmitSignIn}/>
+                        onSubmit={onSubmitSignIn}
+                        passUserInfo={passUserInfo}/>
                 }}/>
             <Route exact path={ROUTES.HOME}
                 render={(props) => {

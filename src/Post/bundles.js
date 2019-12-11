@@ -1,15 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BundlesStyle, 
     ThumbnailDiv,
     ThumbnailLabelGroup } from './style'
 import * as CATEGORIES from '../constants/selectorCategories.js'
+import { withFirebase } from '../Firebase'
 
-
+const cryptoRandomString = require('crypto-random-string');
 const imageData = {}
 let thumbGrid = null
+const firebaseURLs = {}
 
 const Bundles = (props) => {
-    const gridCoords = {}
+    //const gridCoords = {}
     //const [error, setError] = useState(false)
     //const [errorMsg, setErrorMsg] = useState('')
     //const [coordsBool, setCoordsBool] = useState(true)
@@ -24,39 +26,76 @@ const Bundles = (props) => {
     })
     const onSubmit = event => {
         event.preventDefault()
-        console.log(imageData)
-    }
+        const { age, gender, description } = form
+        const { uid } = props.firebase.auth.currentUser 
+        const randKey = cryptoRandomString({length: 10})
+        let userData = {}
+        props.firebase.db.collection('bundles').doc(randKey).set({
+            firebaseURLs,
+            age,
+            gender,
+            description,
+            uid,
+            imageRefs,
+            available: 'yes',
+        })
+        props.firebase.db.collection("users").doc(uid).get()
+            .then(function(doc){
+                userData = doc.data()
+                addDataToUser(userData, randKey, uid)
+            })
+        
 
+    }
+    const addDataToUser = (userObj, randKey, uid) => {
+        props.firebase.db.collection("users").doc(uid)
+        .set({ ...userObj, bundles: [randKey]})
+    }
+    const resizeThumbWidth = () => {
+        const wide = window.innerWidth
+        if(wide <= 600){
+           return 3 
+        }else if(wide > 600 && wide < 800){
+           return 4 
+        }else{
+           return 5 
+        }  
+    }
+    const [width, setWidth] = useState(resizeThumbWidth())
 
     const handleFormImages = (arr) => {
-        console.log(arr.length)
         const imgs = form.images
-        const newImgArray = new Array(arr.length).fill('BLOB')
-        console.log(newImgArray)
-        const newImgArrayFormData = new Array(arr.length).fill('BLOB_RAW')
+        const newImgArray = [] 
+        const newImgArrayFormData = [] 
         for(let i=0; i<arr.length; i++){
-            console.log(Math.ceil(arr[i].size/1000), " kbytes")
-            //need to refactor this so that it is an object not an array
-            //this array is too slow when it comes to removing items
-            const cryptoRandomString = require('crypto-random-string');
-            const randKey = cryptoRandomString({length: 10}); 
-           // console.log(randKey)
-            newImgArray[i] = randKey 
-            const reader = new FileReader()
-            reader.readAsDataURL(arr[i])
-            reader.onload = () => {
-                imageData[randKey] = reader.result 
-                if(i+1 === arr.length){
-                    if(arr.length + imageRefs.length === 10){
-                        setAddImageButton('Photo Limit Reached')
+            const regex = /\.(jpg|JPG|gif|GIF|jpeg|JPEG|PNG|png)$/
+            const search = arr[i].name.search(regex)
+            if(search !== -1){
+                const fileExtension = arr[i].name.slice(search)
+                const randKey = cryptoRandomString({length: 10}); 
+                newImgArray.push({name: randKey, extension: fileExtension})
+                props.firebase.storage.ref('bundles/')
+                    .child(`${randKey}${fileExtension}`)
+                    .put(arr[i])
+                    .then(file => file.ref.getDownloadURL())
+                    .then(url => {
+                        firebaseURLs[randKey] = url
+                    })
+                const reader = new FileReader()
+                reader.readAsDataURL(arr[i])
+                reader.onload = () => {
+                    imageData[randKey] = reader.result 
+                    if(i+1 === arr.length){
+                        if(arr.length + imageRefs.length === 10){
+                            setAddImageButton('Photo Limit Reached')
+                        }
+                        setImageRefs([...imageRefs, ...newImgArray])
                     }
-                    //setThumbGrid(gridCoords)
-                    setImageRefs([...imageRefs, ...newImgArray])
                 }
-            }
-            newImgArrayFormData[i] = arr[i]
-            if(i+1 === arr.length){
-                setForm({...form, images:[...imgs, ...newImgArrayFormData]}) 
+                newImgArrayFormData.push(arr[i])
+                if(i+1 === arr.length){
+                    setForm({...form, images:[...imgs, ...newImgArrayFormData]}) 
+                }
             }
         }  
 
@@ -76,10 +115,9 @@ const Bundles = (props) => {
     }
     const onClickX = event => {
         const indexNum = +event.target.id
-        delete imageData[imageRefs[indexNum]]
-        console.log(imageData)
-        console.log(imageRefs)
-        console.log(indexNum)
+        const randKey = imageRefs[indexNum].name
+        delete firebaseURLs[randKey]
+        delete imageData[randKey]
         const copyDataImages = [...imageRefs]
         const copyImages = [...form.images]
         copyImages.splice(indexNum, 1)
@@ -95,7 +133,7 @@ const Bundles = (props) => {
             thumbGrid = {
                 [num] : [1,1]
             }
-        } else if(thumbGrid[num-1][0] === 3){
+        } else if(thumbGrid[num-1][0] === width){
            const x = 1
            const y = thumbGrid[num-1][1] + 1
            thumbGrid[num] = [x,y]   
@@ -106,8 +144,22 @@ const Bundles = (props) => {
         } 
         return thumbGrid[num]
     }
-    //console.log(props.dims)
-    //add function to make thumb-columns responsed to width
+    useEffect(() => {
+        const handleResize = () => {
+            const wide = window.innerWidth
+            if(wide <= 600){
+                setWidth(3)
+            }else if(wide > 600 && wide < 800){
+                setWidth(4)
+            }else{
+                setWidth(5)
+            }  
+        } 
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    });
 
     return(
         <BundlesStyle>
@@ -117,6 +169,7 @@ const Bundles = (props) => {
             <div className="form">
                 <form onSubmit={onSubmit}>
                     <select id="select" className="select" name='age' onChange={onChange}>
+                    <option key='select age'>select age</option>
                     {CATEGORIES.age.map((e,i) => {
                         return(
                         <option value={e} key={e}>
@@ -126,6 +179,7 @@ const Bundles = (props) => {
                     })} 
                     </select>
                     <select id="select" className="select" name='gender' onChange={onChange}>
+                    <option key='select gender'>select gender</option>
                     {CATEGORIES.gender.map((e,i) => {
                         return(
                         <option value={e} key={e}>
@@ -139,7 +193,7 @@ const Bundles = (props) => {
                             const coords = getCoords(i)
                             const col = coords[0]
                             const row = coords[1]
-                            const thumb = imageData[e]
+                            const thumb = imageData[e.name]
                             return(
                             <ThumbnailLabelGroup key={i} img={`url(${thumb})`}
                                 row={row} col={col} >
@@ -155,10 +209,10 @@ const Bundles = (props) => {
                         <input className="select" name='image' type='file' 
                         multiple onChange={onChange}/>
                     </label>
-                    <input type='text' className='select' 
+                    <textarea type='text' className='select' 
                         name="description" placeholder='add description' 
-                        onChange={onChange}>
-                    </input>
+                        onChange={onChange} rows="5">
+                    </textarea>
                     <button className="select" type='submit'>
                         Add
                     </button>
@@ -168,4 +222,4 @@ const Bundles = (props) => {
     )
 }
 
-export default Bundles
+export default withFirebase(Bundles)

@@ -96,6 +96,9 @@ export const BundlesStyle = styled.div`
                 &[type="text"]{
                     color: black;
                 }
+                &[type="textarea"]{
+                    height: 5rem;    
+                }
                 &[type="submit"]{
                     background-image: url("data:image/svg+xml,%3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='10px' height='10px' viewBox='0 0 10 10' enable-background='new 0 0 10 10' xml:space='preserve'%3E%3Cpath fill='%2312BE0A' d='M5,9.75c2.609,0,4.75-2.141,4.75-4.75c0-2.61-2.141-4.75-4.753-4.75C2.387,0.25,0.25,2.39,0.25,5 C0.25,7.609,2.39,9.75,5,9.75z M4.393,7.439c-0.228,0-0.412-0.111-0.555-0.276L2.594,5.702c-0.123-0.14-0.167-0.266-0.167-0.416 c0-0.324,0.266-0.579,0.583-0.579c0.185,0,0.324,0.082,0.454,0.225l0.923,1.095l1.778-2.822c0.144-0.218,0.308-0.331,0.518-0.331 c0.313,0,0.597,0.235,0.597,0.556c0,0.119-0.047,0.256-0.129,0.388L4.945,7.133C4.816,7.32,4.615,7.439,4.393,7.439z'/%3E%3C/svg%3E"), linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%);
                 }

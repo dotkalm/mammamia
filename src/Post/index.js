@@ -21,7 +21,7 @@ const Post = (props) => {
             <span className="sellling_spacer"></span>
         </div>
         {category === ''? <Categories dims={props.dims} onClick={onClick}/> : '' }
-        {category === 'Baby Bundles' ? <Bundles dims={props.dims}/> : ''}
+        {category === 'Baby Bundles' ? <Bundles user={props.user}/> : ''}
     </StylePost>
     )
 }

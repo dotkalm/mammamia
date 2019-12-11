@@ -33,6 +33,7 @@ const SignIn = (props) => {
         })
         .then(async function(doc){
             console.log(doc.data())
+            props.passUserInfo(doc.data())
             return doc.data()
         })
         .catch(err => console.log(err))
