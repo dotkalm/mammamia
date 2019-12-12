@@ -12,6 +12,9 @@ const Post = (props) => {
             setCategory(event.target.id)
         }
     }
+    if(props.category !== 'post'){
+        props.changeCategory('post')
+    } 
     return(
 <div>
     <StylePost> 

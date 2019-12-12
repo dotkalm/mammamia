@@ -12,32 +12,34 @@ let getUidOnce = true
 
 function App(props) {
     const [ uiButton, setUIButton] = useState({
-        post: false,
     })
+    const [ category, setCategory ] = useState('')
     const [dims, setDim] = useState({width: window.innerWidth, height: window.innerHeight})
     const [ uid, setUid ] = useState('')
     const [ truth, setTruth ] = useState(false)
     const [ bundles, setBundles ] = useState([])
-    const [user, setUser ] = useState({
-        username:'',
-        email:'',
-        uid:'',
-        ip: '',
-        lat: '',
-        lng: ''
-    }) 
+    const [user, setUser ] = useState({}) 
     const [userBundles, setUserBundles] = useState([])
     
     props.firebase.auth.onAuthStateChanged((user) => {
         if (user && getUidOnce) {
             getUidOnce = false
             getBundleRefs(user.uid)
+            const GeocoderArcGIS = require('geocoder-arcgis');
+            const geocoder = new GeocoderArcGIS()
+            geocoder.findAddressCandidates('380 New York Street, Redlands, CA 92373',{})
+                .then((result) =>{
+                  console.log(result);
+                })
+                .catch(console.log);
         }
     })
 
     const getBundleRefs = (uid) => {
         props.firebase.db.collection("users").doc(uid).get()
-            .then(doc => doc.data().bundles)
+            .then(doc => {
+                setUser(doc.data())
+                return doc.data().bundles})
             .then(bundles => bundles.forEach((e,i,array) => {
                 const {length} = array
                 getBundles(e, i, length)
@@ -78,7 +80,6 @@ function App(props) {
         })
     }
     const setTheBundles = (arr) => {
-        console.log(arr)
         setUserBundles(arr)
     }
     const grabUid = async (user1, uid, coords, ip) => {
@@ -152,20 +153,29 @@ function App(props) {
         event.preventDefault()
     }
     const onClick = event => {
-        const booleanState = uiButton[event.currentTarget.name]
-        if (event.currentTarget.name === 'post' && !uiButton[event.currentTarget.name]){
+        console.log(user)
+        const cat = event.currentTarget.name 
+        if (cat === 'post'){
             props.history.push(ROUTES.POST)
-            setUIButton({...uiButton, [event.currentTarget.name]: true})
+        } else if (cat === 'home'){
+            props.history.push(ROUTES.HOME)
         }
+
     }
 
     const updateBundles = (newBundle) => {
         console.log(bundles, newBundle)
         setBundles([newBundle, ...bundles])
     }
+    const changeCategory = (cat) => {
+        setCategory(cat)
+    }
     return (
       <main>
-        <NavBar onSubmit={onSubmit} onClick={onClick} uiButton={uiButton}/>
+        <NavBar onSubmit={onSubmit} ROUTES={ROUTES} 
+            onClick={onClick} 
+            category={category}
+            uiButton={uiButton}/>
         <Switch>
             <Route exact path={ROUTES.SIGN_UP}
                 render={(props) => {
@@ -183,6 +193,7 @@ function App(props) {
                 render={(props) => {
                     return<Home
                             user={user} 
+                            changeCategory={changeCategory}
                             uid={uid}
                             dims={dims}
                             userBundles={userBundles}
@@ -192,6 +203,8 @@ function App(props) {
             <Route exact path={ROUTES.POST}
                 render={(props) => {
                     return<Post
+                            category={category}
+                            changeCategory={changeCategory}
                             user={user} 
                             uid={uid}
                             dims={dims}

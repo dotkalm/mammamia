@@ -12,12 +12,12 @@ const NavBar = (props) => {
         return(
             <HomeStyle> 
                 <nav> 
-                    <span className="top-left">
+                    <object className="top-left" name="home" onClick={props.onClick} >
                     {Person()}
-                    </span>
+                    </object>
                     <span className="top">
                         <object className="top_1" name="post" onClick={props.onClick} >
-                            {props.uiButton.post ? TagSelected() : Tag()}
+                            {props.category === 'post' ? TagSelected() : Tag()}
                         </object>
                         <span className="top_2">
                             {Mag()}
