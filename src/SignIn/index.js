@@ -29,6 +29,7 @@ const SignIn = (props) => {
         })
         .then(async function(doc){
             console.log(doc.data())
+            //this needs to get passed to the main user state
             props.passUserInfo(doc.data())
             props.history.push(ROUTES.HOME)
             return doc.data()
