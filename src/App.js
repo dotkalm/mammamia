@@ -110,11 +110,11 @@ function App(props) {
         event.preventDefault()
     }
     const onClick = event => {
-        const cat = event.currentTarget.name
+        const cat = event.currentTarget.id
         console.log(cat)
         if (cat === 'post'){
             props.history.push(ROUTES.POST)
-        } else if (event === 'home'){
+        } else if (cat === 'home'){
             props.history.push(ROUTES.HOME)
         }
 

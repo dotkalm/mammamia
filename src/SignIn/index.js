@@ -30,6 +30,7 @@ const SignIn = (props) => {
         .then(async function(doc){
             console.log(doc.data())
             //this needs to get passed to the main user state
+            document.activeElement.blur()
             props.passUserInfo(doc.data())
             return doc.data()
         })
@@ -59,7 +60,7 @@ const SignIn = (props) => {
                         type="password"
                         placeholder="Password"
                     />
-
+                    <br/>
                     <button type='submit'>Sign In</button>
                 {user.error && user.error.message}
                 </form>

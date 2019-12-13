@@ -27,7 +27,7 @@ const Bundles = (props) => {
         gender: '',
         description: '',
     })
-    console.log(props.user)
+    const [validateUpload, setValidateUpload] = useState({})
     const onSubmit = event => {
         event.preventDefault()
         const { age, gender, description } = form
@@ -71,6 +71,7 @@ const Bundles = (props) => {
         const imgs = form.images
         const newImgArray = [] 
         const newImgArrayFormData = [] 
+        const validateURLs = {}
         for(let i=0; i<arr.length; i++){
             const regex = /\.(jpg|JPG|gif|GIF|jpeg|JPEG|PNG|png)$/
             const search = arr[i].name.search(regex)
@@ -81,9 +82,27 @@ const Bundles = (props) => {
                 props.firebase.storage.ref('bundles/')
                     .child(`${randKey}${fileExtension}`)
                     .put(arr[i])
-                    .then(file => file.ref.getDownloadURL())
-                    .then(url => {
-                        firebaseURLs[randKey] = url
+                    .on('state_changed', function(snapshot){
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload is ' + progress + '% done');
+                    }, function(error) {
+                        console.log(error)
+                    }, function(snapshot){
+                        snapshot.ref.getDownloadURL()
+                        .then(url => {
+                            firebaseURLs[randKey] = url
+                            validateURLs[randKey] = url
+                        })
+                        .then(() => {
+                            console.log(validateURLs, i)
+                            if (Object.keys(validateURLs).length === arr.length){
+                                return validateURLs
+                            }
+                        })
+                        .then(urls => {
+                            console.log(urls)
+                            setValidateUpload({...validateUpload, ...urls})
+                        })
                     })
                 const reader = new FileReader()
                 reader.readAsDataURL(arr[i])
@@ -105,6 +124,15 @@ const Bundles = (props) => {
 
     }
     const onChange = event => {
+        console.log(
+        Object.keys(imageData).length,
+        Object.keys(validateUpload).length,
+        form.images.length,
+        Object.keys(validateUpload).length,
+        form.description,        
+        form.age,        
+        form.gender,
+        )
         if(event.target.name ==='image'){
             const { files } = event.target
             const filesArr = [...files]
@@ -122,6 +150,7 @@ const Bundles = (props) => {
         const randKey = imageRefs[indexNum].name
         delete firebaseURLs[randKey]
         delete imageData[randKey]
+        delete validateUpload[randKey] 
         const copyDataImages = [...imageRefs]
         const copyImages = [...form.images]
         copyImages.splice(indexNum, 1)
@@ -167,6 +196,14 @@ const Bundles = (props) => {
     const selectPrimary = event => {
         setPrimary(+event.target.id)
     }
+    const isInvalid = 
+        imageRefs.length === 0 ||
+        Object.keys(imageData).length !== Object.keys(validateUpload).length ||
+        form.images.length !== Object.keys(validateUpload).length ||
+        form.description === '' ||
+        form.age === '' ||
+        form.gender === '' 
+
     return(
         <BundlesStyle>
         <div id="description">
@@ -221,7 +258,7 @@ const Bundles = (props) => {
                         name="description" placeholder='add description' 
                         onChange={onChange} rows="5">
                     </textarea>
-                    <button className="select" type='submit'>
+                    <button className="select" type='submit' disabled={isInvalid}>
                         Add
                     </button>
                 </form>

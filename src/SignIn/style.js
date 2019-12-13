@@ -30,22 +30,25 @@ export const ImgContainer = styled.div`
 `
 
 export const SignInStyle = styled.div`
-    width: 50%;
+    width: 80%;
     background-color: gray;
-    margin: 3rem auto;
+    margin: 5% auto;
     border-radius: .4rem;
-    padding: 1rem;
+    padding: 5%;
     display: flex;
+    font-size: 16px;
     form{
         margin: auto;
-        width: 100%;
+        width: 96%;
         border-radius: .4rem;
+        padding: 2%;
     }
     input{
         display: block;
-        width: 100%;
+        width: 90%;
         margin: auto;
         height: 2rem;
+        font-size: 100%;
     }
 
 `

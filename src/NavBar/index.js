@@ -38,14 +38,14 @@ const NavBar = (props) => {
         <div>
             <HomeStyle> 
                 <nav>
-                    <object className="top-left" name="home" onClick={props.onClick} >
+                    <div className="top-left" id="home" onClick={props.onClick} >
                         {props.category === 'home' ? PersonSelected() : Person()}
-                    </object>
+                    </div>
                     
                     <span className="top">
-                        <object className="top_1" name="post" onClick={props.onClick} >
+                        <div className="top_1" id="post" onClick={props.onClick} >
                             {props.category === 'post' ? TagSelected() : Tag()}
-                        </object>
+                        </div>
                         <span className="top_2">
                             {Mag()}
                         <form onSubmit={props.onSubmit}>
