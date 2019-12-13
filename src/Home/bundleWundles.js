@@ -1,21 +1,23 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { withFirebase } from '../Firebase'
 
 const UserBundleWundles = (props) => {
-    
-    if(props.bundles.length !== 0){
-        console.log(props)
-    }
+    const [bundles, setBundles] = useState([])
+   console.log(props.user) 
+    useEffect(() => {
+        setBundles(props.user.bundles)
+    },[props.user.bundles]) 
     return (
-    <div> {  props.bundles.map((e,i) => {
-        return(
-            <img key={e.description} 
-            alt={e.description}
-            src={e.primaryImage} 
-            width="100px"
-            height="100px"/>
-        )
-    })}</div>
+        <div> YOUR BUNDLES <br/> 
+            {bundles ? 
+            bundles.map((e,i) => {
+            return(<img key={i}
+                alt={e.description}
+                src={e.primaryImage}
+                width='200px'
+                height="200px"/>)
+            }) : ''
+        }</div>
     )
 }
 

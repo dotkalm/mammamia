@@ -24,11 +24,7 @@ const SignIn = (props) => {
         .then(authUser => {
             return authUser.user.uid
         })
-        .then(uid => {
-            props.onSubmit(uid)
-            return uid
-        })
-        .then(uid => {
+         .then(uid => {
             return props.firebase.db.collection('users').doc(uid).get()
         })
         .then(async function(doc){

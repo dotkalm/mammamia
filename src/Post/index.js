@@ -29,6 +29,7 @@ const Post = (props) => {
         {category === 'Baby Bundles' ?
             <Bundles bundles={props.bundles}
                 updateBundles={props.updateBundles}
+                updateUser={props.updateUser}
                 user={props.user}/> : ''}
         </StylePost>
     </div>

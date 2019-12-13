@@ -27,40 +27,33 @@ const Bundles = (props) => {
         gender: '',
         description: '',
     })
+    console.log(props.user)
     const onSubmit = event => {
         event.preventDefault()
         const { age, gender, description } = form
         const { uid } = props.firebase.auth.currentUser 
-        const randKey = cryptoRandomString({length: 10})
-        let userData = {}
-        console.log(props.bundles)
         const primaryKey = imageRefs[primary].name 
         const primaryImage = firebaseURLs[primaryKey]
+        const timeStamp = Math.floor(Date.now() / 1000); 
         const newBundle = {
+            timeStamp,
             firebaseURLs,
             age,
             gender,
             description,
-            uid,
             imageRefs,
             available: 'yes',
             primaryImage: primaryImage,
         }
-        props.updateBundles(newBundle)
-        props.firebase.db.collection('bundles').doc(randKey).set(newBundle)
-        props.firebase.db.collection("users").doc(uid).get()
-            .then(function(doc){
-                userData = doc.data()
-                const prevBundles = userData.bundles
-                addDataToUser(userData, prevBundles, randKey, uid)
-            })
-        
-
-    }
-    const addDataToUser = (userObj, prevBundles, randKey, uid) => {
+        const newUserObj = {
+            ...props.user,
+            bundles: [...props.user.bundles, newBundle]
+        }
         props.firebase.db.collection("users").doc(uid)
-        .set({ ...userObj, bundles: [randKey, ...prevBundles]})
-        .then(props.history.push(ROUTES.HOME))
+            .set(newUserObj)
+            .then(props.updateUser(newUserObj))
+            .then(props.history.push(ROUTES.HOME))
+
     }
     const resizeThumbWidth = () => {
         const wide = window.innerWidth
@@ -181,7 +174,7 @@ const Bundles = (props) => {
         </div>
             <div className="form">
                 <form onSubmit={onSubmit}>
-                    <select id="select" className="select" name='age' onChange={onChange}>
+                    <select id="select-age" className="select" name='age' onChange={onChange}>
                     <option key='select age'>select age</option>
                     {CATEGORIES.age.map((e,i) => {
                         return(
@@ -191,7 +184,7 @@ const Bundles = (props) => {
                         )
                     })} 
                     </select>
-                    <select id="select" className="select" name='gender' onChange={onChange}>
+                    <select id="select-gender" className="select" name='gender' onChange={onChange}>
                     <option key='select gender'>select gender</option>
                     {CATEGORIES.gender.map((e,i) => {
                         return(

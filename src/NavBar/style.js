@@ -1,5 +1,24 @@
 import styled from 'styled-components'
 
+export const Overlay = styled.div`
+    width: 200px;
+    transform: ${props => props.transform ? props.transform : '200px'};
+    height: ${props => props.height ? props.height : 'auto'};    
+    box-shadow: 3px 3px 10px black;
+    background-color: antiquewhite;
+    float: right;
+    position: absolute;
+    h1{
+        text-align: center;
+        &:hover{
+            text-shadow: -2px 2px 4px #000000;
+            color: white;
+            cursor: pointer;
+        }
+    }
+`
+
+
 export const MainContentStyle = styled.div`
     background-color: white;
     width: 98%;

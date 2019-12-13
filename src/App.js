@@ -11,13 +11,8 @@ import { withFirebase } from './Firebase'
 let getUidOnce = true
 
 function App(props) {
-    const [ uiButton, setUIButton] = useState({
-    })
     const [ category, setCategory ] = useState('')
     const [dims, setDim] = useState({width: window.innerWidth, height: window.innerHeight})
-    const [ uid, setUid ] = useState('')
-    const [ truth, setTruth ] = useState(false)
-    const [ bundles, setBundles ] = useState([])
     const [user, setUser ] = useState({}) 
     const [userBundles, setUserBundles] = useState([])
     
@@ -25,62 +20,43 @@ function App(props) {
         if (user && getUidOnce) {
             getUidOnce = false
             getBundleRefs(user.uid)
-            const GeocoderArcGIS = require('geocoder-arcgis');
-            const geocoder = new GeocoderArcGIS()
-            geocoder.findAddressCandidates('380 New York Street, Redlands, CA 92373',{})
-                .then((result) =>{
-                  console.log(result);
-                })
-                .catch(console.log);
         }
     })
+    
+    const signOut = () => {
+        props.firebase.auth.signOut()
+        setUser({})
+    }
 
     const getBundleRefs = (uid) => {
         props.firebase.db.collection("users").doc(uid).get()
-            .then(doc => {
-                setUser(doc.data())
-                return doc.data().bundles})
-            .then(bundles => bundles.forEach((e,i,array) => {
-                const {length} = array
-                getBundles(e, i, length)
-            }))
+            .then(doc => setUser(doc.data()) )
     }
-    let bundleObj = [] 
-    const getBundles = (id, i, len) => {
-        props.firebase.db.collection("bundles").doc(id).get()
-            .then(doc => {
-                console.log(doc.data())
-                if(i===0){
-                    bundleObj = [doc.data()]
-                } else if (i+1 === len){
-                    bundleObj = [...bundleObj, doc.data()]
-                    setBundles(bundleObj)
-                } else {
-                    bundleObj = [...bundleObj, doc.data()]
-                }
-            })
-    }
-
-    function setUserSynchronous(response) {
+    
+    function registerUserGeo(response) {
         const { id, lat, lng, city, state, ip_address, username, uid, email } = response
-        return new Promise(resolve => {
-            setTruth(true)
-            setUser({
-                ...user,
-                id : id,
-                lat: lat,
-                lng: lng,
-                city: city,
-                state: state,
-                ip: ip_address,
-                username: username,
-                uid: uid,
-                email: email
-            })
+        props.firebase.db.collection("users").doc(uid).set({
+            username,
+            email,
+            ip_address,
+            lat,
+            lng,
+            city,
+            state,
+            id,
+            bundles: []
         })
-    }
-    const setTheBundles = (arr) => {
-        setUserBundles(arr)
+        setUser({
+            id : id,
+            lat: lat,
+            lng: lng,
+            city: city,
+            state: state,
+            ip: ip_address,
+            username: username,
+            uid: uid,
+            email: email
+        })
     }
     const grabUid = async (user1, uid, coords, ip) => {
         setUser({...user,
@@ -107,36 +83,16 @@ function App(props) {
                     }
                 })
             const response = await registerResponse.json()
-            await setUserSynchronous(response.data)
-            return  
+            await registerUserGeo(response.data)
+            return response.data 
         } catch(err){
             console.log(err)
         }
     }
+   const  updateUser = (userData) => {
+       setUser(userData)
+    }
 
-    const onSubmitSignIn = async (uid1) => {
-        setUid(uid1)
-        console.log(uid1,truth)
-        try{
-            const registerResponse = await fetch(`${
-                process.env.REACT_APP_BACKEND_URL}/user/logIn`, {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify(uid1),
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-            })
-            const response = await registerResponse.json()
-            await setUserSynchronous(response.data[0]).then(
-                props.history.push(ROUTES.HOME)
-            )
-            return
-        }catch(error){
-            console.log(error) 
-        }
-
-    } 
     const passUserInfo = (data) => {
         console.log(data)
     }
@@ -163,60 +119,59 @@ function App(props) {
 
     }
 
-    const updateBundles = (newBundle) => {
-        console.log(bundles, newBundle)
-        setBundles([newBundle, ...bundles])
-    }
     const changeCategory = (cat) => {
         setCategory(cat)
     }
-    return (
-      <main>
-        <NavBar onSubmit={onSubmit} ROUTES={ROUTES} 
-            onClick={onClick} 
-            category={category}
-            uiButton={uiButton}/>
-        <Switch>
-            <Route exact path={ROUTES.SIGN_UP}
-                render={(props) => {
-                    return<SignUp
-                        grabUid={grabUid}
-                        />
-                }}/>
-            <Route exact path={ROUTES.SIGN_IN}
-                render={(props) => {
-                    return<SignIn
-                        onSubmit={onSubmitSignIn}
-                        passUserInfo={passUserInfo}/>
-                }}/>
-            <Route exact path={ROUTES.HOME}
-                render={(props) => {
-                    return<Home
-                            user={user} 
-                            changeCategory={changeCategory}
-                            uid={uid}
-                            dims={dims}
-                            userBundles={userBundles}
-                            setUserBundles={setUserBundles}
-                          />
-                }}/>
-            <Route exact path={ROUTES.POST}
-                render={(props) => {
-                    return<Post
-                            category={category}
-                            changeCategory={changeCategory}
-                            user={user} 
-                            uid={uid}
-                            dims={dims}
-                            updateBundles={updateBundles}
-                            setUserBundles={setUserBundles}
-                            userBundles={userBundles}
-                          />
-                }}/>
-
-        </Switch>
-      </main>
-  );
+    if(user.username){
+        return (
+          <main>
+            <NavBar 
+                dims={dims} 
+                onSubmit={onSubmit}
+                ROUTES={ROUTES} 
+                onClick={onClick}
+                signOut={signOut}
+                user={user}
+                category={category}/>
+            <Switch>
+                <Route exact path={ROUTES.SIGN_UP}
+                    render={(props) => {
+                        return<SignUp
+                            grabUid={grabUid}
+                            />
+                    }}/>
+                <Route exact path={ROUTES.HOME}
+                    render={(props) => {
+                        return<Home
+                                user={user} 
+                                changeCategory={changeCategory}
+                                dims={dims}
+                                userBundles={userBundles}
+                                setUserBundles={setUserBundles}
+                              />
+                    }}/>
+                <Route exact path={ROUTES.POST}
+                    render={(props) => {
+                        return<Post
+                                category={category}
+                                changeCategory={changeCategory}
+                                user={user} 
+                                dims={dims}
+                                updateUser={updateUser}
+                                setUserBundles={setUserBundles}
+                                userBundles={userBundles}
+                              />
+                    }}/>
+            </Switch>
+          </main>
+        )
+    }else{
+        return(
+            <main>
+                <SignIn user={user} passUserInfo={passUserInfo}/>
+            </main>
+        )
+    }
 }
 
 export default withRouter(withFirebase(App));

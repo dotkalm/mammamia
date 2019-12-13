@@ -45,23 +45,13 @@ const SignUpFormBase = (props) => {
     })
 
     const onSubmit = event => {
-        const { username, email, passwordOne } = user
+        const { email, passwordOne } = user
         event.preventDefault()
         props.firebase.doCreateUserWithEmailAndPassword(email, passwordOne)
         .then(authUser => {
             props.grabUid(user, authUser.user.uid, coords, ip)
-            return authUser.user.uid})
-        .then(uid => {
-        return props.firebase.db.collection('users')
-            .doc(uid).set({
-                username,
-                email,
-                ip
-            })
-        }).then(
-            props.history.push(ROUTES.HOME)
-        )
-
+        })
+        .then(props.history.push(ROUTES.HOME))
         .catch(error => {
             setUser({...user, [error]:error})
         })

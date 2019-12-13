@@ -1,6 +1,7 @@
-import React from 'react'
-import { HomeStyle } from './style'
+import React, {useState, useEffect} from 'react'
+import { HomeStyle, Overlay } from './style'
 import Mag from './mag'
+import PersonSelected from './personSelected'
 import Person from './person'
 import Pin from './pin'
 import Tag from './tag'
@@ -9,11 +10,37 @@ import Sack from './sack'
 import { withRouter } from 'react-router-dom'
 
 const NavBar = (props) => {
-        return(
+    const [dims, setDim] = useState({width: window.innerWidth, height: window.innerHeight})
+    const [isOpen, setIsOpen] = useState(false)
+    const [authState, setAuthState] = useState('Sign Out')
+
+    useEffect(() => {
+        const handleResize = () => setDim({width: window.innerWidth, height: window.innerHeight});
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    });
+    const openMenu = () => {
+        setIsOpen(!isOpen)
+    }
+    const signInSignOut = () => {
+        console.log(props.user)
+        if(Object.keys(props.user).length === 0){
+            setAuthState('Sign In')
+        } else {
+            setAuthState('Sign Out')
+            props.signOut()
+            props.history.push(props.ROUTES.SIGN_IN)
+        }
+    }
+
+    return(
+        <div>
             <HomeStyle> 
                 <nav> 
                     <object className="top-left" name="home" onClick={props.onClick} >
-                    {Person()}
+                        {props.category === 'home' ? PersonSelected() : Person()}
                     </object>
                     <span className="top">
                         <object className="top_1" name="post" onClick={props.onClick} >
@@ -43,7 +70,7 @@ const NavBar = (props) => {
                     <span className="top-right">
                         <span id="space-top-right">
                         </span>
-                        <span className="menu">
+                        <span className="menu" onClick={openMenu}>
                             <div id="topMenu"></div>
                             <div id="pink"></div>
                             <div id="topMenu"></div>
@@ -53,7 +80,15 @@ const NavBar = (props) => {
                     </span>
                 </nav>
             </HomeStyle>
-
+            {isOpen ? 
+            <Overlay height={`${dims.height-40}px`}
+                transform={`translateX(${dims.width-200}px)`}> 
+                <h1 className="signInSignOut" onClick={signInSignOut}>{authState}</h1>
+                <h1 className="Browse" >Browse</h1>
+                <h1 className="Sack" >Shopping Sack</h1>
+            </Overlay>
+            : ''}
+        </div>
     )
 }
 
