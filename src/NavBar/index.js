@@ -31,17 +31,17 @@ const NavBar = (props) => {
         } else {
             setAuthState('Sign Out')
             props.signOut()
-            props.history.push(props.ROUTES.SIGN_IN)
+            props.history.push(props.ROUTES.ROOT)
         }
     }
-
     return(
         <div>
             <HomeStyle> 
-                <nav> 
+                <nav>
                     <object className="top-left" name="home" onClick={props.onClick} >
                         {props.category === 'home' ? PersonSelected() : Person()}
                     </object>
+                    
                     <span className="top">
                         <object className="top_1" name="post" onClick={props.onClick} >
                             {props.category === 'post' ? TagSelected() : Tag()}

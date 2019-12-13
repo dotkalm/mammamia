@@ -95,6 +95,7 @@ function App(props) {
 
     const passUserInfo = (data) => {
         console.log(data)
+        setUser(data)
     }
 
     useEffect(() => {
@@ -109,11 +110,11 @@ function App(props) {
         event.preventDefault()
     }
     const onClick = event => {
-        console.log(user)
-        const cat = event.currentTarget.name 
+        const cat = event.currentTarget.name
+        console.log(cat)
         if (cat === 'post'){
             props.history.push(ROUTES.POST)
-        } else if (cat === 'home'){
+        } else if (event === 'home'){
             props.history.push(ROUTES.HOME)
         }
 

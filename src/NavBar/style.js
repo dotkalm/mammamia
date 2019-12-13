@@ -73,9 +73,10 @@ export const HomeStyle = styled.header`
         float: left;
         background-color: pink;
         height: 100%;
-        svg{
+       &:hover{
+           cursor: pointer; 
+       } 
         
-        }
     }
     .top{
        ## border-radius: .5rem;
