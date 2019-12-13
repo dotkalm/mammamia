@@ -79,16 +79,18 @@ const Bundles = (props) => {
                 const fileExtension = arr[i].name.slice(search)
                 const randKey = cryptoRandomString({length: 10}); 
                 newImgArray.push({name: randKey, extension: fileExtension})
-                props.firebase.storage.ref('bundles/')
+                
+                const uploadTask = props.firebase.storage.ref('bundles/')
                     .child(`${randKey}${fileExtension}`)
                     .put(arr[i])
-                    .on('state_changed', function(snapshot){
+
+                uploadTask.on('state_changed', function(snapshot){
                         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                         console.log('Upload is ' + progress + '% done');
                     }, function(error) {
                         console.log(error)
-                    }, function(snapshot){
-                        snapshot.ref.getDownloadURL()
+                    }, function(){
+                        uploadTask.snapshot.ref.getDownloadURL()
                         .then(url => {
                             firebaseURLs[randKey] = url
                             validateURLs[randKey] = url
@@ -196,10 +198,12 @@ const Bundles = (props) => {
     const selectPrimary = event => {
         setPrimary(+event.target.id)
     }
+    const readyToUpload = 
+        Object.keys(imageData).length === Object.keys(validateUpload).length ||
+        form.images.length === Object.keys(validateUpload).length 
+
     const isInvalid = 
         imageRefs.length === 0 ||
-        Object.keys(imageData).length !== Object.keys(validateUpload).length ||
-        form.images.length !== Object.keys(validateUpload).length ||
         form.description === '' ||
         form.age === '' ||
         form.gender === '' 
