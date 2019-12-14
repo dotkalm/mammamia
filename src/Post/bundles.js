@@ -18,6 +18,7 @@ const Bundles = (props) => {
     //const [errorMsg, setErrorMsg] = useState('')
     //const [coordsBool, setCoordsBool] = useState(true)
   //  const [thumbGrid, setThumbGrid] = useState({})
+    const [progress, setProgress] = useState({})
     const [primary, setPrimary] = useState(0)
     const [imageRefs, setImageRefs] = useState([])
     const [addImageButton, setAddImageButton] = useState('Add Photos')
@@ -28,8 +29,8 @@ const Bundles = (props) => {
         description: '',
     })
     const [validateUpload, setValidateUpload] = useState({})
-    const onSubmit = event => {
-        event.preventDefault()
+
+    const sendToDB = () => {
         const { age, gender, description } = form
         const { uid } = props.firebase.auth.currentUser 
         const primaryKey = imageRefs[primary].name 
@@ -65,13 +66,16 @@ const Bundles = (props) => {
            return 5 
         }  
     }
+    
     const [width, setWidth] = useState(resizeThumbWidth())
 
     const handleFormImages = (arr) => {
+        const filesFromForm = {}
         const imgs = form.images
         const newImgArray = [] 
         const newImgArrayFormData = [] 
         const validateURLs = {}
+        let arrLength = arr.length
         for(let i=0; i<arr.length; i++){
             const regex = /\.(jpg|JPG|gif|GIF|jpeg|JPEG|PNG|png)$/
             const search = arr[i].name.search(regex)
@@ -79,33 +83,6 @@ const Bundles = (props) => {
                 const fileExtension = arr[i].name.slice(search)
                 const randKey = cryptoRandomString({length: 10}); 
                 newImgArray.push({name: randKey, extension: fileExtension})
-                
-                const uploadTask = props.firebase.storage.ref('bundles/')
-                    .child(`${randKey}${fileExtension}`)
-                    .put(arr[i])
-
-                uploadTask.on('state_changed', function(snapshot){
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        console.log('Upload is ' + progress + '% done');
-                    }, function(error) {
-                        console.log(error)
-                    }, function(){
-                        uploadTask.snapshot.ref.getDownloadURL()
-                        .then(url => {
-                            firebaseURLs[randKey] = url
-                            validateURLs[randKey] = url
-                        })
-                        .then(() => {
-                            console.log(validateURLs, i)
-                            if (Object.keys(validateURLs).length === arr.length){
-                                return validateURLs
-                            }
-                        })
-                        .then(urls => {
-                            console.log(urls)
-                            setValidateUpload({...validateUpload, ...urls})
-                        })
-                    })
                 const reader = new FileReader()
                 reader.readAsDataURL(arr[i])
                 reader.onload = () => {
@@ -121,10 +98,14 @@ const Bundles = (props) => {
                 if(i+1 === arr.length){
                     setForm({...form, images:[...imgs, ...newImgArrayFormData]}) 
                 }
+            } else if(search === -1){
+                arrLength -= 1
             }
-        }  
-
+            console.log(arrLength, i+1)
+            
+        }
     }
+
     const onChange = event => {
         console.log(
         Object.keys(imageData).length,
@@ -147,6 +128,7 @@ const Bundles = (props) => {
            })
         } 
     }
+
     const onClickX = event => {
         const indexNum = +event.target.id
         const randKey = imageRefs[indexNum].name
@@ -160,9 +142,8 @@ const Bundles = (props) => {
         setForm({...form, images: copyImages})
         setImageRefs(copyDataImages)
         setAddImageButton('Add Photos')
-
-
     }
+
     const getCoords = (num) => {
         if(num === 0){
             thumbGrid = {
@@ -207,6 +188,45 @@ const Bundles = (props) => {
         form.description === '' ||
         form.age === '' ||
         form.gender === '' 
+
+    const onSubmit = event => {
+        event.preventDefault()
+        console.log("hi")
+        console.log(imageRefs)
+    }
+
+    const uploadImages = () => {
+        const firebaseURLs = {}
+        const validateURLs = {}
+        imageRefs.forEach((e,i) => {
+            const randKey = imageRefs[i].name
+            const uploadTask = props.firebase.storage.ref('bundles/')
+                .child(`${randKey}${fileExtension}`)
+                .put(form.images[i])
+            uploadTask.on('state_changed', function(snapshot){
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+            }, function(error) {
+                console.log(error)
+            }, function(){
+                uploadTask.snapshot.ref.getDownloadURL()
+                .then(url => {
+                    firebaseURLs[randKey] = url
+                    validateURLs[randKey] = url
+                })
+                .then(() => {
+                    console.log(validateURLs, i)
+                    if (Object.keys(validateURLs).length === arr.length){
+                        return validateURLs
+                    }
+                })
+                .then(urls => {
+                    console.log(urls)
+                    setValidateUpload({...validateUpload, ...urls})
+                })
+            })
+        })
+    }
 
     return(
         <BundlesStyle>
