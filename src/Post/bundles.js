@@ -205,7 +205,7 @@ const Bundles = (props) => {
             uploadTask.on('state_changed', function(snapshot){
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.log('Upload is ' + progress + '% done');
-                console.log
+                console.log(uploadProgress)
                 setUploadProgress({...uploadProgress, [randKey]: progress})
             }, function(error) {
                 console.log(error)
