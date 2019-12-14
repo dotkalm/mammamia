@@ -18,7 +18,7 @@ const Bundles = (props) => {
     //const [errorMsg, setErrorMsg] = useState('')
     //const [coordsBool, setCoordsBool] = useState(true)
   //  const [thumbGrid, setThumbGrid] = useState({})
-    const [progress, setProgress] = useState({})
+    const [uploadProgress, setUploadProgress] = useState({})
     const [primary, setPrimary] = useState(0)
     const [imageRefs, setImageRefs] = useState([])
     const [addImageButton, setAddImageButton] = useState('Add Photos')
@@ -196,7 +196,6 @@ const Bundles = (props) => {
     }
 
     const uploadImages = () => {
-        const firebaseURLs = {}
         const validateURLs = {}
         imageRefs.forEach((e,i) => {
             const randKey = imageRefs[i].name
@@ -206,12 +205,13 @@ const Bundles = (props) => {
             uploadTask.on('state_changed', function(snapshot){
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.log('Upload is ' + progress + '% done');
+                console.log
+                setUploadProgress({...uploadProgress, [randKey]: progress})
             }, function(error) {
                 console.log(error)
             }, function(){
                 uploadTask.snapshot.ref.getDownloadURL()
                 .then(url => {
-                    firebaseURLs[randKey] = url
                     validateURLs[randKey] = url
                 })
                 .then(() => {
@@ -222,6 +222,7 @@ const Bundles = (props) => {
                 })
                 .then(urls => {
                     console.log(urls)
+                    console.log(uploadProgress)
                     setValidateUpload({...validateUpload, ...urls})
                 })
             })
