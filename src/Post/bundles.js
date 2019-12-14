@@ -201,7 +201,7 @@ const Bundles = (props) => {
         imageRefs.forEach((e,i) => {
             const randKey = imageRefs[i].name
             const uploadTask = props.firebase.storage.ref('bundles/')
-                .child(`${randKey}${fileExtension}`)
+                .child(`${randKey}${imageRefs[i].extension}`)
                 .put(form.images[i])
             uploadTask.on('state_changed', function(snapshot){
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -216,7 +216,7 @@ const Bundles = (props) => {
                 })
                 .then(() => {
                     console.log(validateURLs, i)
-                    if (Object.keys(validateURLs).length === arr.length){
+                    if (Object.keys(validateURLs).length === form.images.length){
                         return validateURLs
                     }
                 })
