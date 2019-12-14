@@ -192,7 +192,7 @@ const Bundles = (props) => {
     const onSubmit = event => {
         event.preventDefault()
         console.log("hi")
-        console.log(imageRefs)
+        console.log(imageRefs, form)
     }
 
     const uploadImages = () => {
