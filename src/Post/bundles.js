@@ -13,6 +13,8 @@ let thumbGrid = null
 const firebaseURLs = {}
 
 const Bundles = (props) => {
+    const [bytesTransferred, setBytesTransferred] = useState(0)
+    const [totalBytes, setTotalBytes] = useState(0)
     //const gridCoords = {}
     //const [error, setError] = useState(false)
     //const [errorMsg, setErrorMsg] = useState('')
@@ -189,24 +191,35 @@ const Bundles = (props) => {
         form.age === '' ||
         form.gender === '' 
 
-    const onSubmit = event => {
+    const onSubmit = async event => {
         event.preventDefault()
         console.log("hi")
         console.log(imageRefs, form)
+        const urls = await uploadImages()
+        
     }
 
-    const uploadImages = () => {
+    let letTotalBytes = 0
+    let letBytesTransferred = 0
+
+    const uploadImages = async() => {
         const validateURLs = {}
-        imageRefs.forEach((e,i) => {
+        imageRefs.forEach((e, i, array) => {
             const randKey = imageRefs[i].name
             const uploadTask = props.firebase.storage.ref('bundles/')
                 .child(`${randKey}${imageRefs[i].extension}`)
                 .put(form.images[i])
             uploadTask.on('state_changed', function(snapshot){
+                letTotalBytes += snapshot.totalBytes
+                letBytesTransferred += snapshot.bytesTransferred
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-                console.log(uploadProgress)
+                setUploadProgress('Upload is ' + progress + '% done');
+                console.log(uploadProgress, "upload progress")
                 setUploadProgress({...uploadProgress, [randKey]: progress})
+                if(i+1 === array.length){
+                    setTotalBytes(letTotalBytes)
+                    setBytesTransferred(letBytesTransferred) 
+                }
             }, function(error) {
                 console.log(error)
             }, function(){
@@ -224,7 +237,9 @@ const Bundles = (props) => {
                     console.log(urls)
                     console.log(uploadProgress)
                     setValidateUpload({...validateUpload, ...urls})
+                    return urls
                 })
+                
             })
         })
     }
@@ -288,6 +303,8 @@ const Bundles = (props) => {
                     </button>
                 </form>
             </div>
+        {`${bytesTransferred} bytes transferred`}<br/> 
+        {`${totalBytes} bytes total`} 
         </BundlesStyle>
     )
 }
