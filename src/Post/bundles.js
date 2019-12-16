@@ -11,6 +11,7 @@ const cryptoRandomString = require('crypto-random-string');
 const imageData = {}
 let thumbGrid = null
 const firebaseURLs = {}
+let notSubmitted = true
 
 const Bundles = (props) => {
     const [bytesTransferred, setBytesTransferred] = useState(0)
@@ -32,15 +33,14 @@ const Bundles = (props) => {
     })
     const [validateUpload, setValidateUpload] = useState({})
 
-    const sendToDB = () => {
+    const sendToDB = (urls) => {
         const { age, gender, description } = form
-        const { uid } = props.firebase.auth.currentUser 
         const primaryKey = imageRefs[primary].name 
-        const primaryImage = firebaseURLs[primaryKey]
+        const primaryImage = urls[primaryKey]
         const timeStamp = Math.floor(Date.now() / 1000); 
         const newBundle = {
             timeStamp,
-            firebaseURLs,
+            urls,
             age,
             gender,
             description,
@@ -48,11 +48,14 @@ const Bundles = (props) => {
             available: 'yes',
             primaryImage: primaryImage,
         }
+        console.log(newBundle)
         const newUserObj = {
             ...props.user,
             bundles: [...props.user.bundles, newBundle]
         }
-        props.firebase.db.collection("users").doc(uid)
+        console.log(newUserObj)
+        console.log(props.firebase.auth.currentUser.uid)
+        props.firebase.db.collection("users").doc(props.firebase.auth.currentUser.uid)
             .set(newUserObj)
             .then(props.updateUser(newUserObj))
             .then(props.history.push(ROUTES.HOME))
@@ -72,11 +75,9 @@ const Bundles = (props) => {
     const [width, setWidth] = useState(resizeThumbWidth())
 
     const handleFormImages = (arr) => {
-        const filesFromForm = {}
         const imgs = form.images
         const newImgArray = [] 
         const newImgArrayFormData = [] 
-        const validateURLs = {}
         let arrLength = arr.length
         for(let i=0; i<arr.length; i++){
             const regex = /\.(jpg|JPG|gif|GIF|jpeg|JPEG|PNG|png)$/
@@ -191,12 +192,17 @@ const Bundles = (props) => {
         form.age === '' ||
         form.gender === '' 
 
+
     const onSubmit = async event => {
         event.preventDefault()
         console.log("hi")
         console.log(imageRefs, form)
-        const urls = await uploadImages()
-        
+        console.log(validateUpload)
+        console.log(readyToUpload)
+        if(notSubmitted === true){
+            notSubmitted = false
+            uploadImages()        
+        }
     }
 
     let letTotalBytes = 0
@@ -212,10 +218,8 @@ const Bundles = (props) => {
             uploadTask.on('state_changed', function(snapshot){
                 letTotalBytes += snapshot.totalBytes
                 letBytesTransferred += snapshot.bytesTransferred
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                const progress = (letBytesTransferred / letTotalBytes) * 100;
                 setUploadProgress('Upload is ' + progress + '% done');
-                console.log(uploadProgress, "upload progress")
-                setUploadProgress({...uploadProgress, [randKey]: progress})
                 if(i+1 === array.length){
                     setTotalBytes(letTotalBytes)
                     setBytesTransferred(letBytesTransferred) 
@@ -230,16 +234,9 @@ const Bundles = (props) => {
                 .then(() => {
                     console.log(validateURLs, i)
                     if (Object.keys(validateURLs).length === form.images.length){
-                        return validateURLs
+                        sendToDB(validateURLs)
                     }
                 })
-                .then(urls => {
-                    console.log(urls)
-                    console.log(uploadProgress)
-                    setValidateUpload({...validateUpload, ...urls})
-                    return urls
-                })
-                
             })
         })
     }

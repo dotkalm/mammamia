@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { withFirebase } from '../Firebase'
 import { SignUpStyle, ImgContainer } from './style.js'
-import * as ROUTES from '../constants/routes'
 
 const SignUpFormBase = (props) => {
 
@@ -51,7 +50,7 @@ const SignUpFormBase = (props) => {
         .then(authUser => {
             props.grabUid(user, authUser.user.uid, coords, ip)
         })
-        .then(props.history.push(ROUTES.HOME))
+       // .then(props.history.push(ROUTES.HOME))
         .catch(error => {
             setUser({...user, [error]:error})
         })

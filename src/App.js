@@ -123,7 +123,7 @@ function App(props) {
     const changeCategory = (cat) => {
         setCategory(cat)
     }
-    if(user.username){
+    if(user){
         return (
           <main>
             <NavBar 
@@ -135,12 +135,6 @@ function App(props) {
                 user={user}
                 category={category}/>
             <Switch>
-                <Route exact path={ROUTES.SIGN_UP}
-                    render={(props) => {
-                        return<SignUp
-                            grabUid={grabUid}
-                            />
-                    }}/>
                 <Route exact path={ROUTES.HOME}
                     render={(props) => {
                         return<Home
@@ -169,7 +163,22 @@ function App(props) {
     }else{
         return(
             <main>
-                <SignIn user={user} passUserInfo={passUserInfo}/>
+                <Switch>
+                <Route exact path={ROUTES.SIGN_UP}
+                    render={(props) => {
+                        return<SignUp
+                            grabUid={grabUid}
+                            />
+                    }}/>
+                <Route exact path={ROUTES.SIGN_IN}
+                    render={(props) => {
+                        return<SignIn
+                            user={user} 
+                            passUserInfo={passUserInfo}
+                            grabUid={grabUid}
+                            />
+                    }}/>
+                </Switch>
             </main>
         )
     }
