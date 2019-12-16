@@ -21,7 +21,6 @@ const Bundles = (props) => {
     //const [errorMsg, setErrorMsg] = useState('')
     //const [coordsBool, setCoordsBool] = useState(true)
   //  const [thumbGrid, setThumbGrid] = useState({})
-    const [uploadProgress, setUploadProgress] = useState({})
     const [primary, setPrimary] = useState(0)
     const [imageRefs, setImageRefs] = useState([])
     const [addImageButton, setAddImageButton] = useState('Add Photos')
@@ -31,7 +30,6 @@ const Bundles = (props) => {
         gender: '',
         description: '',
     })
-    const [validateUpload, setValidateUpload] = useState({})
 
     const sendToDB = (urls) => {
         const { age, gender, description } = form
@@ -112,9 +110,7 @@ const Bundles = (props) => {
     const onChange = event => {
         console.log(
         Object.keys(imageData).length,
-        Object.keys(validateUpload).length,
         form.images.length,
-        Object.keys(validateUpload).length,
         form.description,        
         form.age,        
         form.gender,
@@ -137,7 +133,6 @@ const Bundles = (props) => {
         const randKey = imageRefs[indexNum].name
         delete firebaseURLs[randKey]
         delete imageData[randKey]
-        delete validateUpload[randKey] 
         const copyDataImages = [...imageRefs]
         const copyImages = [...form.images]
         copyImages.splice(indexNum, 1)
@@ -182,9 +177,6 @@ const Bundles = (props) => {
     const selectPrimary = event => {
         setPrimary(+event.target.id)
     }
-    const readyToUpload = 
-        Object.keys(imageData).length === Object.keys(validateUpload).length ||
-        form.images.length === Object.keys(validateUpload).length 
 
     const isInvalid = 
         imageRefs.length === 0 ||
@@ -197,8 +189,6 @@ const Bundles = (props) => {
         event.preventDefault()
         console.log("hi")
         console.log(imageRefs, form)
-        console.log(validateUpload)
-        console.log(readyToUpload)
         if(notSubmitted === true){
             notSubmitted = false
             uploadImages()        
@@ -219,7 +209,7 @@ const Bundles = (props) => {
                 letTotalBytes += snapshot.totalBytes
                 letBytesTransferred += snapshot.bytesTransferred
                 const progress = (letBytesTransferred / letTotalBytes) * 100;
-                setUploadProgress('Upload is ' + progress + '% done');
+                console.log('Upload is ' + progress + '% done');
                 if(i+1 === array.length){
                     setTotalBytes(letTotalBytes)
                     setBytesTransferred(letBytesTransferred) 
