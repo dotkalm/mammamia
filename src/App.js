@@ -5,6 +5,7 @@ import SignUp from './Register'
 import SignIn from './SignIn'
 import Home from './Home'
 import Post from './Post'
+import Geo from './Geo'
 import NavBar from './NavBar'
 import { withFirebase } from './Firebase'
 
@@ -157,6 +158,7 @@ function App(props) {
                                 userBundles={userBundles}
                               />
                     }}/>
+                <Route exact path={'/geo'} render={(props) => <Geo/>}/>
             </Switch>
           </main>
         )
