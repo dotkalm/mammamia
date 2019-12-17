@@ -34,7 +34,7 @@ const Geo = () => {
     });
     return (
         <div> {results.map((e,i) => {
-           return( <div key={e}>{e[1]}<br/>{distance(me[0],me[1],e[0][0],e[0][1])}</div>)
+           return( <div key={e}>{e[1] } {` ${Math.floor(e[2])} miles away `}</div>)
         })} </div>
     )
 }
