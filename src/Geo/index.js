@@ -26,15 +26,15 @@ const addresses = [['321 W Queen St, Inglewood, California, 90301'], ['1103-1199
 	}
 }
     const index = new KDBush(points);
-    const me = [34.0218555, -118.5157749]
-    const results = index.within(me[0], me[1], .50).map(id => {return [points[id],addresses[id],distance(me[0],me[1],points[id][0],points[id][1])]});
+    const me = [34.0268, -118.4733]
+    const results = index.within(me[0], me[1], .065).map(id => {return [points[id],addresses[id],distance(me[0],me[1],points[id][0],points[id][1])]});
     //const nearest = geokdbush.around(index, -119.7051, 34.4363, 1)
     results.sort(function(a, b) {
       return a[2] - b[2];
     });
     return (
         <div> {results.map((e,i) => {
-           return( <div key={e}>{e[1] } {` ${Math.floor(e[2])} miles away `}</div>)
+           return( <div key={e}>{e[1] } {` -- ${Math.floor(e[2] * 100)/100} miles away `}</div>)
         })} </div>
     )
 }
