@@ -1,10 +1,14 @@
 import styled from 'styled-components'
 
+export const BundleGroup = styled.div`
+    margin: 1rem;
+`
+
 export const BundleStyle = styled.div`
     background-image: ${props => props.img ? props.img : 'auto'};
     background-size: cover;
-    height: 5rem;
-    width: 5rem;
+    height: 8rem;
+    width: 8rem;
     border: 1px solid gray;
     display: inline-block;
     margin: 1rem;

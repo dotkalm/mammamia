@@ -43,7 +43,6 @@ const addresses = [['321 W Queen St, Inglewood, California, 90301'], ['1103-1199
 }
     const index = new KDBush(points);
     const me = [34.0268, -118.4733]
-    const rangeNum = 0.35
     const results = index.within(me[0], me[1], slider).map(id => {return [points[id],addresses[id],distance(me[0],me[1],points[id][0],points[id][1])]});
     //const nearest = geokdbush.around(index, -119.7051, 34.4363, 1)
         results.sort(function(a, b) {
@@ -58,8 +57,9 @@ const addresses = [['321 W Queen St, Inglewood, California, 90301'], ['1103-1199
     console.log(typeof(slider))
     return (
         <GeoStyle> 
-        <div className="slidecontainer">
-  <input type="range" min=".02" step=".01" max=".78" value={slider} onChange={sliderChange} id="myRange"></input>
+        <div className="slidecontainer"> 1 mile
+  <input type="range" min=".02" step=".01" max=".3" value={slider} onChange={sliderChange} id="myRange"></input>
+        20 miles
 </div>
         {results.map((e,i) => {
            return( <div key={e}>{e[1] } {` -- ${Math.floor(e[2] * 100)/100} miles away `}</div>)
