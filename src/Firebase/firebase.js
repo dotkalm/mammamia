@@ -4,6 +4,7 @@ import 'firebase/firestore'
 import 'firebase/storage'
 import 'firebase/functions'
 
+
 const config = {
     apiKey: "AIzaSyDS3KQLhOkFou_iteGgbR1lCNkCJbtTAZw",
     authDomain: "mamma-mia-1.firebaseapp.com",
@@ -19,21 +20,26 @@ class Firebase {
     this.auth = app.auth()
     this.db = app.firestore()
     this.storage = app.storage()
+    this.functions = app.functions()
   }
-  doCreateUserWithEmailAndPassword = (email, password) => {
-    return  this.auth.createUserWithEmailAndPassword(email, password)
+    doCreateUserWithEmailAndPassword = (email, password) => {
+        return  this.auth.createUserWithEmailAndPassword(email, password)
   }
-  doSignInWithEmailAndPassword = (email, password) =>
-    this.auth.signInWithEmailAndPassword(email, password)
+    doSignInWithEmailAndPassword = (email, password) =>
+        this.auth.signInWithEmailAndPassword(email, password)
 
-  doSignOut = () => this.auth.signOut()
+    doSignOut = () => this.auth.signOut()
 
-  doPasswordReset = email => this.auth.sendPasswordResetEmail(email)
+    doPasswordReset = email => this.auth.sendPasswordResetEmail(email)
   
-  doPasswordUpdate = password =>
-    this.auth.currentUser.updatePassword(password)
-  user = uid => this.db.ref(`users/${uid}`)
-  users = () => this.db.ref('users')
+    doPasswordUpdate = password =>
+        this.auth.currentUser.updatePassword(password)
+        user = uid => this.db.ref(`users/${uid}`)
+        users = () => this.db.ref('users')
+
+
+
+
 }
 export default Firebase
 

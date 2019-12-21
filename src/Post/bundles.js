@@ -16,11 +16,6 @@ let notSubmitted = true
 const Bundles = (props) => {
     const [bytesTransferred, setBytesTransferred] = useState(0)
     const [totalBytes, setTotalBytes] = useState(0)
-    //const gridCoords = {}
-    //const [error, setError] = useState(false)
-    //const [errorMsg, setErrorMsg] = useState('')
-    //const [coordsBool, setCoordsBool] = useState(true)
-  //  const [thumbGrid, setThumbGrid] = useState({})
     const [primary, setPrimary] = useState(0)
     const [imageRefs, setImageRefs] = useState([])
     const [addImageButton, setAddImageButton] = useState('Add Photos')
