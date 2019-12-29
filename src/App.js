@@ -16,7 +16,7 @@ function App(props) {
     const [dims, setDim] = useState({width: window.innerWidth, height: window.innerHeight})
     const [user, setUser ] = useState({}) 
     const [userBundles, setUserBundles] = useState([])
-    
+    const [sampleBundles, setSampleBundles] = useState([]) 
     props.firebase.auth.onAuthStateChanged((user) => {
         if (user && getUidOnce) {
             getUidOnce = false
@@ -41,12 +41,20 @@ function App(props) {
                 })
             }) 
     }
-    getSampleUsers()
+    //getSampleUsers()
+    console.log(sampleBundles)
 
     const getSampleUsersSnapshot = () => {
         props.firebase.db.collection("sample_users")
             .onSnapshot(querySnapshot => {
-                console.log(querySnapshot)
+                const snapshotArray = new Array(querySnapshot.size)
+                let index = 0
+                querySnapshot.forEach((doc) => {
+                    snapshotArray[index] = doc.data()
+                    index += 1
+                })
+                console.log(snapshotArray)
+                //setSampleBundles(snapshotArray)
             })
     }
     getSampleUsersSnapshot()
