@@ -28,7 +28,7 @@ const SignIn = (props) => {
             return props.firebase.db.collection('users').doc(uid).get()
         })
         .then(async function(doc){
-            console.log(doc.data())
+            console.log(doc.data(), "doc.data()")
             //this needs to get passed to the main user state
             document.activeElement.blur()
             props.passUserInfo(doc.data())

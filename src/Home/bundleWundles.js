@@ -7,6 +7,8 @@ const UserBundleWundles = (props) => {
     useEffect(() => {
         setBundles(props.user.bundles)
     },[props.user.bundles]) 
+    //const fileURL = 'random_users/kids_Velcro2.jpg'
+    //const thumbURL = props.firebase.storage.ref(fileURL).getDownloadURL().then(promises => console.log(promises))
     return (
         <BundleGroup> YOUR BUNDLES <br/> 
             {bundles ? 
