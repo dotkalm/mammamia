@@ -42,6 +42,14 @@ function App(props) {
             }) 
     }
     getSampleUsers()
+
+    const getSampleUsersSnapshot = () => {
+        props.firebase.db.collection("sample_users")
+            .onSnapshot(querySnapshot => {
+                console.log(querySnapshot)
+            })
+    }
+    getSampleUsersSnapshot()
     
     function registerUserGeo(response) {
         const { id, lat, lng, city, state, ip_address, username, uid, email } = response
