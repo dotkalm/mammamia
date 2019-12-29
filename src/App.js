@@ -7,6 +7,7 @@ import Home from './Home'
 import Post from './Post'
 import Geo from './Geo'
 import NavBar from './NavBar'
+import Root from './Root'
 import { withFirebase } from './Firebase'
 
 let getUidOnce = true
@@ -33,15 +34,6 @@ function App(props) {
         props.firebase.db.collection("users").doc(uid).get()
             .then(doc => setUser(doc.data()) )
     }
-    const getSampleUsers = () => {
-        props.firebase.db.collection("sample_users").get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    console.log(doc.data())
-                })
-            }) 
-    }
-    //getSampleUsers()
     console.log(sampleBundles)
 
     const getSampleUsersSnapshot = () => {
@@ -54,10 +46,12 @@ function App(props) {
                     index += 1
                 })
                 console.log(snapshotArray)
-                //setSampleBundles(snapshotArray)
+                setSampleBundles(snapshotArray)
             })
     }
-    getSampleUsersSnapshot()
+    if(sampleBundles.length === 0){
+        getSampleUsersSnapshot() 
+    }
     
     function registerUserGeo(response) {
         const { id, lat, lng, city, state, ip_address, username, uid, email } = response
@@ -184,6 +178,11 @@ function App(props) {
                               />
                     }}/>
                 <Route exact path={'/geo'} render={(props) => <Geo/>}/>
+                <Route exact path={ROUTES.ROOT} 
+                    render={(props) => {
+                        return<Root
+                                sampleBundles={sampleBundles}/>
+                    }}/>
             </Switch>
           </main>
         )
