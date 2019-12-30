@@ -18,6 +18,8 @@ function App(props) {
     const [user, setUser ] = useState({}) 
     const [userBundles, setUserBundles] = useState([])
     const [sampleBundles, setSampleBundles] = useState([]) 
+    const [tokenized, setTokenized] = useState({})
+
     props.firebase.auth.onAuthStateChanged((user) => {
         if (user && getUidOnce) {
             getUidOnce = false
@@ -42,10 +44,21 @@ function App(props) {
                 const snapshotArray = new Array(querySnapshot.size)
                 let index = 0
                 querySnapshot.forEach((doc) => {
+                    const imageURLs = doc.data().bundles[0].image_paths
+                    console.log(imageURLs)
+                    const imageRefs = imageURLs.map((e,i) => {
+                        if (i === 0){
+                            const filename = e.split('/').pop()
+                            const replaceSpace = filename.replace("%20", " ")
+                            const img = props.firebase.storage.ref(`random_users/${replaceSpace}`)
+                                .getDownloadURL()
+                                .then(promises => setTokenized({...tokenized, filename: promises}))
+                        }
+                    })
                     snapshotArray[index] = doc.data()
                     index += 1
                 })
-                console.log(snapshotArray)
+                console.log(tokenized)
                 setSampleBundles(snapshotArray)
             })
             
