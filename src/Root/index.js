@@ -6,7 +6,8 @@ const Root = (props) => {
 
 
         const bundles = e.bundles[0]
-        return(<div key={e.username}>
+        const key = e.username + i
+        return(<div key={key}>
                 {e.username}{' of '}{`${e.city}, ${e.state} `}
                  is selling a {' kids '} 
                 {bundles.description}
