@@ -48,6 +48,7 @@ function App(props) {
                 console.log(snapshotArray)
                 setSampleBundles(snapshotArray)
             })
+            
     }
     if(sampleBundles.length === 0){
         getSampleUsersSnapshot() 
