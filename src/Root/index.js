@@ -1,4 +1,6 @@
 import React from 'react'
+import { withFirebase } from '../Firebase'
+import { RootStyle } from './style'
 
 const Root = (props) => {
 
@@ -7,6 +9,7 @@ const Root = (props) => {
 
         const bundles = e.bundles[0]
         const key = e.username + i
+
         return(<div key={key}>
                 {e.username}{' of '}{`${e.city}, ${e.state} `}
                  is selling a {' kids '} 
@@ -20,4 +23,4 @@ const Root = (props) => {
         </div>
     )
 }
-export default Root
+export default withFirebase(Root)

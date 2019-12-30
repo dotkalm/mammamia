@@ -1,0 +1,6 @@
+import styled from 'styled-components'
+
+export const RootStyle = styled.div`
+    background-image: ${props => props.image ? props.image : 'linear-gradient(red, orange)'};    
+    
+`
