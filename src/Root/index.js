@@ -3,15 +3,14 @@ import { withFirebase } from '../Firebase'
 import { RootStyle } from './style'
 
 const Root = (props) => {
-
+    const httpsImages = Object.keys(props.httpsImages).map((e,i, array) => {
+        console.log(e)
+    })
     const images = props.sampleBundles.map((e,i) => {
-
-
         const bundles = e.bundles[0]
-        const key = e.username + i
         const fileURL = bundles.image_paths[0]
         //const thumbURL = props.firebase.storage.ref(fileURL).getDownloadURL().then(promises => console.log(promises))
-        return(<div key={key}>
+        return(<div key={e.uid} id={e.uid}>
                 {e.username}{' of '}{`${e.city}, ${e.state} `}
                  is selling a {' kids '} 
                 {bundles.description}
@@ -19,7 +18,7 @@ const Root = (props) => {
     })
 
     return(
-        <div>
+        <div id="rootroot">
         {images}
         </div>
     )

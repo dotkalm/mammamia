@@ -19,6 +19,7 @@ function App(props) {
     const [userBundles, setUserBundles] = useState([])
     const [sampleBundles, setSampleBundles] = useState([]) 
     const [tokenized, setTokenized] = useState({})
+    const [httpsImages, setHttpsImages] = useState({})
 
     props.firebase.auth.onAuthStateChanged((user) => {
         if (user && getUidOnce) {
@@ -36,29 +37,39 @@ function App(props) {
         props.firebase.db.collection("users").doc(uid).get()
             .then(doc => setUser(doc.data()) )
     }
-    console.log(sampleBundles)
 
     const getSampleUsersSnapshot = () => {
         props.firebase.db.collection("sample_users")
             .onSnapshot(querySnapshot => {
                 const snapshotArray = new Array(querySnapshot.size)
                 let index = 0
+                let promiseIndex = 0
+                const imageMap = {}
                 querySnapshot.forEach((doc) => {
+                    const uid = doc.id
                     const imageURLs = doc.data().bundles[0].image_paths
-                    console.log(imageURLs)
+                    if(imageURLs.length === 0){
+                        console.log("no images")
+                        promiseIndex += 1
+                    }
                     const imageRefs = imageURLs.map((e,i) => {
                         if (i === 0){
                             const filename = e.split('/').pop()
                             const replaceSpace = filename.replace("%20", " ")
                             const img = props.firebase.storage.ref(`random_users/${replaceSpace}`)
                                 .getDownloadURL()
-                                .then(promises => setTokenized({...tokenized, filename: promises}))
+                                .then(promises => {
+                                    promiseIndex += 1
+                                    imageMap[uid] = promises
+                                    if(promiseIndex === querySnapshot.size){
+                                        setHttpsImages(imageMap)
+                                    }
+                                })
                         }
                     })
-                    snapshotArray[index] = doc.data()
+                    snapshotArray[index] = {...doc.data(), 'uid': uid}
                     index += 1
                 })
-                console.log(tokenized)
                 setSampleBundles(snapshotArray)
             })
             
@@ -128,7 +139,6 @@ function App(props) {
     }
 
     const passUserInfo = (data) => {
-        console.log(data)
         setUser(data)
     }
 
@@ -145,7 +155,6 @@ function App(props) {
     }
     const onClick = event => {
         const cat = event.currentTarget.id
-        console.log(cat)
         if (cat === 'post'){
             props.history.push(ROUTES.POST)
         } else if (cat === 'home'){
@@ -195,6 +204,7 @@ function App(props) {
                 <Route exact path={ROUTES.ROOT} 
                     render={(props) => {
                         return<Root
+                                httpsImages={httpsImages}
                                 sampleBundles={sampleBundles}/>
                     }}/>
             </Switch>
