@@ -66,25 +66,7 @@ function App(props) {
                     if(imageURLs.length === 0){
                         promiseIndex += 1
                     }
-                    if(doc.imageURL === undefined){
-                        const imageRefs = imageURLs.map((e,i) => {
-                            if (i === 0){
-                                const filename = e.split('/').pop()
-                                const replaceSpace = filename.replace(/\%20/g, " ")
-                                const img = props.firebase.storage.ref(`random_users/${replaceSpace}`)
-                                    .getDownloadURL()
-                                    .then(promises => {
-                                        promiseIndex += 1
-                                        imageMap[uid] = promises
-                                        updateDoc(uid, promises)
-                                        if(promiseIndex === querySnapshot.size){
-                                            setHttpsImages(imageMap)
-                                        }
-                                    })
-                            }
-                        })                    
-                    }
-
+                    console.log()
                     snapshotObj[uid] = {...doc.data(), 'uid': uid}
                     index += 1
                 })
