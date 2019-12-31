@@ -37,7 +37,22 @@ function App(props) {
         props.firebase.db.collection("users").doc(uid).get()
             .then(doc => setUser(doc.data()) )
     }
+    
+    const updateDoc = (uid, url) => {
+    
+        const entryToUpdate = props.firebase.db.collection("sample_users").doc(uid)
 
+        return entryToUpdate.update({
+            imageURL: url 
+        })
+        .then(() => {
+            console.log("Document successfully updated!")
+        })
+        .catch(function(error) {
+            console.error("Error updating document: ", error);
+        })
+
+    }
     const getSampleUsersSnapshot = () => {
         props.firebase.db.collection("sample_users")
             .onSnapshot(querySnapshot => {
@@ -51,21 +66,25 @@ function App(props) {
                     if(imageURLs.length === 0){
                         promiseIndex += 1
                     }
-                    const imageRefs = imageURLs.map((e,i) => {
-                        if (i === 0){
-                            const filename = e.split('/').pop()
-                            const replaceSpace = filename.replace("%20", " ")
-                            const img = props.firebase.storage.ref(`random_users/${replaceSpace}`)
-                                .getDownloadURL()
-                                .then(promises => {
-                                    promiseIndex += 1
-                                    imageMap[uid] = promises
-                                    if(promiseIndex === querySnapshot.size){
-                                        setHttpsImages(imageMap)
-                                    }
-                                })
-                        }
-                    })
+                    if(doc.imageURL === undefined){
+                        const imageRefs = imageURLs.map((e,i) => {
+                            if (i === 0){
+                                const filename = e.split('/').pop()
+                                const replaceSpace = filename.replace(/\%20/g, " ")
+                                const img = props.firebase.storage.ref(`random_users/${replaceSpace}`)
+                                    .getDownloadURL()
+                                    .then(promises => {
+                                        promiseIndex += 1
+                                        imageMap[uid] = promises
+                                        updateDoc(uid, promises)
+                                        if(promiseIndex === querySnapshot.size){
+                                            setHttpsImages(imageMap)
+                                        }
+                                    })
+                            }
+                        })                    
+                    }
+
                     snapshotObj[uid] = {...doc.data(), 'uid': uid}
                     index += 1
                 })
