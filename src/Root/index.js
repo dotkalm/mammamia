@@ -4,11 +4,14 @@ import { RootStyle } from './style'
 
 const Root = (props) => {
     const httpsImages = Object.keys(props.httpsImages).map((e,i, array) => {
-        console.log(props.httpsImages[e])
+        const imageURL = props.httpsImages[e]
         const user = props.sampleBundles[e]
         return (
         <div key={e}>
-            {user.address}    
+            {user.address}<br/>
+            <img src={imageURL} width="200px" alt={user.bundles[0].description} />
+            <br/>
+            kids {user.bundles[0].description}
         </div> 
         )
     })
