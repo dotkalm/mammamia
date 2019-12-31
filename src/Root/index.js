@@ -4,7 +4,7 @@ import { RootStyle } from './style'
 
 const Root = (props) => {
     const httpsImages = Object.keys(props.httpsImages).map((e,i, array) => {
-        console.log(e)
+        console.log(props.httpsImages[e])
     })
     const images = props.sampleBundles.map((e,i) => {
         const bundles = e.bundles[0]
