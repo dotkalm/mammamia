@@ -1,24 +1,39 @@
 import React from 'react'
 import { withFirebase } from '../Firebase'
-import { RootStyle } from './style'
+import { 
+    RootStyle, 
+    ImageStyle, 
+    MainStyle
+    } from './style'
 
 const Root = (props) => {
+    let column = 0
     const sampleBundles = Object.keys(props.sampleBundles).map((e,i, array) => {
         const user = props.sampleBundles[e]
+        console.log(props.dims)
+        if(column >= 3){
+            column = 0;
+        }
+        column += 1
         return (
-        <div key={e}>
+        <RootStyle key={e}
+            image={`url(${user.imageURL}) no-repeat center center fixed`} 
+            column={column}
+            >
             {user.address}<br/>
-            {user.imageURL ? <img src={user.imageURL} width="200px" alt={user.bundles[0].description} /> : ''}
+            {user.imageURL ? <ImageStyle 
+                image={`url(${user.imageURL})`} 
+                alt={user.bundles[0].description} /> : ''}
             <br/>
             kids {user.bundles[0].description}
-        </div> 
+        </RootStyle> 
         )
     })
     console.log(props.sampleBundles) 
     return(
-        <div> 
+        <MainStyle width={`${props.dims.width}px`}> 
         {sampleBundles}
-        </div>
+        </MainStyle>
     )
 }
 export default withFirebase(Root)

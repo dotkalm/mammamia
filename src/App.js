@@ -204,6 +204,7 @@ function App(props) {
                 <Route exact path={ROUTES.ROOT} 
                     render={(props) => {
                         return<Root
+                                dims={dims}
                                 httpsImages={httpsImages}
                                 sampleBundles={sampleBundles}/>
                     }}/>
