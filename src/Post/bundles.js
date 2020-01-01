@@ -59,9 +59,11 @@ const Bundles = (props) => {
         if(wide <= 600){
            return 3 
         }else if(wide > 600 && wide < 800){
-           return 4 
+            return 4
+        }else if(wide > 800 && wide < 900){
+           return 5
         }else{
-           return 5 
+           return 6 
         }  
     }
     
