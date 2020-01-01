@@ -4,7 +4,6 @@ export const ImageStyle = styled.div`
     background: ${props => props.image ? props.image : 'linear-gradient(red, orange)'};    
     background-size: contain;
     background-repeat: no-repeat;
-    grid-column: ${props => props.column ? props.column : 1};
     height: 100px;
     border: solid 1px black;
     @media only screen and (max-width: 600px){
