@@ -21,3 +21,7 @@ export const MainStyle = styled.div`
     width: ${props => props.width ? props.width : '200px'};    
     display:grid;
 `
+
+export const DetailStyle = styled.div`
+    background-color: pink;
+`

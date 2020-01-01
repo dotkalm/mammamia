@@ -5,6 +5,7 @@ import {
     ImageStyle, 
     MainStyle
     } from './style'
+import Detail from './detail'
 
 const Root = (props) => {
     const handleResize = () => {
