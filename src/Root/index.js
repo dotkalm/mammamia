@@ -10,11 +10,13 @@ const Root = (props) => {
     const handleResize = () => {
         const wide = window.innerWidth
         if(wide <= 600){
-            return 2
+            return 3 
         }else if(wide > 600 && wide < 800){
             return 4
-        }else{
+        }else if(wide >= 800 && wide < 1000){
             return 5
+        }else{
+            return 6
         }  
     } 
     let column = 0
@@ -29,15 +31,15 @@ const Root = (props) => {
             }
             column += 1
             return (
-            <RootStyle key={e}
-                image={`url(${user.imageURL}) no-repeat center `} 
+            <RootStyle
                 column={column}
                 >
-                {user.imageURL ? <ImageStyle 
-                    image={`url(${user.imageURL})`} 
-                    alt={user.bundles[0].description} /> : ''}
-                <br/>
-            </RootStyle> 
+                    <ImageStyle key={e}
+                        image={`url(${user.imageURL}) no-repeat center `} 
+                        column={column}
+                        >
+                    </ImageStyle> 
+            </RootStyle>
             )
         }
     })
