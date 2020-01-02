@@ -16,11 +16,6 @@ let notSubmitted = true
 const Bundles = (props) => {
     const [bytesTransferred, setBytesTransferred] = useState(0)
     const [totalBytes, setTotalBytes] = useState(0)
-    //const gridCoords = {}
-    //const [error, setError] = useState(false)
-    //const [errorMsg, setErrorMsg] = useState('')
-    //const [coordsBool, setCoordsBool] = useState(true)
-  //  const [thumbGrid, setThumbGrid] = useState({})
     const [primary, setPrimary] = useState(0)
     const [imageRefs, setImageRefs] = useState([])
     const [addImageButton, setAddImageButton] = useState('Add Photos')
@@ -64,9 +59,11 @@ const Bundles = (props) => {
         if(wide <= 600){
            return 3 
         }else if(wide > 600 && wide < 800){
-           return 4 
+            return 4
+        }else if(wide > 800 && wide < 900){
+           return 5
         }else{
-           return 5 
+           return 6 
         }  
     }
     

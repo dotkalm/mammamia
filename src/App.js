@@ -7,6 +7,7 @@ import Home from './Home'
 import Post from './Post'
 import Geo from './Geo'
 import NavBar from './NavBar'
+import Root from './Root'
 import { withFirebase } from './Firebase'
 
 let getUidOnce = true
@@ -16,7 +17,10 @@ function App(props) {
     const [dims, setDim] = useState({width: window.innerWidth, height: window.innerHeight})
     const [user, setUser ] = useState({}) 
     const [userBundles, setUserBundles] = useState([])
-    
+    const [sampleBundles, setSampleBundles] = useState([]) 
+    const [tokenized, setTokenized] = useState({})
+    const [httpsImages, setHttpsImages] = useState({})
+
     props.firebase.auth.onAuthStateChanged((user) => {
         if (user && getUidOnce) {
             getUidOnce = false
@@ -32,6 +36,46 @@ function App(props) {
     const getBundleRefs = (uid) => {
         props.firebase.db.collection("users").doc(uid).get()
             .then(doc => setUser(doc.data()) )
+    }
+    
+    const updateDoc = (uid, url) => {
+    
+        const entryToUpdate = props.firebase.db.collection("sample_users").doc(uid)
+
+        return entryToUpdate.update({
+            imageURL: url 
+        })
+        .then(() => {
+            console.log("Document successfully updated!")
+        })
+        .catch(function(error) {
+            console.error("Error updating document: ", error);
+        })
+
+    }
+    const getSampleUsersSnapshot = () => {
+        props.firebase.db.collection("sample_users")
+            .onSnapshot(querySnapshot => {
+                const snapshotObj = {}
+                let index = 0
+                let promiseIndex = 0
+                const imageMap = {}
+                querySnapshot.forEach((doc) => {
+                    const uid = doc.id
+                    const imageURLs = doc.data().bundles[0].image_paths
+                    if(imageURLs.length === 0){
+                        promiseIndex += 1
+                    }
+                    console.log()
+                    snapshotObj[uid] = {...doc.data(), 'uid': uid}
+                    index += 1
+                })
+                setSampleBundles(snapshotObj)
+            })
+            
+    }
+    if(Object.keys(sampleBundles).length === 0){
+        getSampleUsersSnapshot() 
     }
     
     function registerUserGeo(response) {
@@ -95,7 +139,6 @@ function App(props) {
     }
 
     const passUserInfo = (data) => {
-        console.log(data)
         setUser(data)
     }
 
@@ -112,7 +155,6 @@ function App(props) {
     }
     const onClick = event => {
         const cat = event.currentTarget.id
-        console.log(cat)
         if (cat === 'post'){
             props.history.push(ROUTES.POST)
         } else if (cat === 'home'){
@@ -159,6 +201,13 @@ function App(props) {
                               />
                     }}/>
                 <Route exact path={'/geo'} render={(props) => <Geo/>}/>
+                <Route exact path={ROUTES.ROOT} 
+                    render={(props) => {
+                        return<Root
+                                dims={dims}
+                                httpsImages={httpsImages}
+                                sampleBundles={sampleBundles}/>
+                    }}/>
             </Switch>
           </main>
         )
