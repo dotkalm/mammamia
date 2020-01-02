@@ -18,6 +18,7 @@ export const RootStyle = styled.div`
     background: ${props => props.image ? props.image : 'linear-gradient(red, orange)'};    
 `
 export const MainStyle = styled.div`
+    margin-top: 2rem;
     width: ${props => props.width ? props.width : '200px'};    
     display:grid;
 `
