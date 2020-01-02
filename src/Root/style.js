@@ -23,6 +23,7 @@ export const MainStyle = styled.div`
 `
 
 export const DetailStyle = styled.div`
+    margin-top: 2rem;
     background-color: orange;
     position: fixed;
     width: 100%;
