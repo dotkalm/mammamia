@@ -32,4 +32,7 @@ export const DetailStyle = styled.div`
     width: 40%;
     height: 100%;
     opacity: 1;
+    img{
+        width: 100%;
+    }
 `

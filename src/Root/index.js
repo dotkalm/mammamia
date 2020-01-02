@@ -63,25 +63,20 @@ const Root = (props) => {
         setWheel({
             X: (wheel.X + event.deltaX/15),
             Y: (wheel.Y + event.deltaY/15)})
-        
-        const index = Math.floor((wheel.Y + wheel.X)/7)
-        if(index >= Object.keys(props.sampleBundles).length){
+        let index = 0 
+        if(Math.floor((wheel.Y + wheel.X)/7) >= 0 && Math.floor((wheel.Y + wheel.X)/7) < Object.keys(props.sampleBundles).length){
+           index =  Math.floor((wheel.Y + wheel.X)/7)
+        } else {
             setWheel({
                 X: 0,
                 Y: 0
             })
         }
-        if(index < 0){
-            setWheel({
-                X: 0,
-                Y: 0
-            })
-        }
-
+        console.log(index, "<--- index")
         const garmet = Object.keys(props.sampleBundles)[index]
-        if(garmet !== undefined){
+        const garmetDetail = props.sampleBundles[garmet].imageURL
+        if(garmet && garmetDetail){
             setGarmetDetail(garmet)
-            console.log(garmetDetail)
         }
     }
     return(

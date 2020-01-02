@@ -7,15 +7,7 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
     response.send("Hello from Firebase I SEE U!");
 });
 
-exports.ping = functions.https.onRequest((request, response) => {
-    try{
-        console.log(request)
-        response.send("ping")
-        }
-    } catch(error){
-        response.send(error)
-    }
-})
+
 
 exports.addItem = functions.https.onRequest((req, res) => {
     return cors(req, res, () => {

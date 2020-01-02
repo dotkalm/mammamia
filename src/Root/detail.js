@@ -9,6 +9,7 @@ const Detail = (props) => {
             <DetailStyle 
                 image={`url(${user.imageURL}) no-repeat center `} 
             >
+                <img src={user.imageURL} alt={user.bundles[0].description}/>
                 { user.bundles[0].description }
             </DetailStyle>
         )
