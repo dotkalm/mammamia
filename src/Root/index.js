@@ -30,7 +30,7 @@ const Root = (props) => {
     const [garmetDetail, setGarmetDetail] = useState(null)
 
     const sampleBundles = Object.keys(props.sampleBundles).map((e,i, array) => {
-        if(garmetDetail === null){
+        if(garmetDetail === null && (i+1) === array.length){
             setGarmetDetail(e)
         }
         const user = props.sampleBundles[e]
