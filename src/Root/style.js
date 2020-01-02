@@ -24,7 +24,7 @@ export const MainStyle = styled.div`
 `
 
 export const DetailStyle = styled.div`
-    background: ${props => props.image ? props.image : 'linear-gradient(red, orange)'};    
+    ##background: ${props => props.image ? props.image : 'linear-gradient(red, orange)'};    
     margin-top: 2rem;
     position: fixed;
     margin-left: 30%;
