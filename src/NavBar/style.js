@@ -61,8 +61,11 @@ export const MainContentStyle = styled.div`
 
 `
 export const HomeStyle = styled.header`
+    width: 99%;
+    position: fixed;
     background-color: Pink;
-    padding: .25rem;
+    padding-left: .5%;
+    padding-right: .5%;
     nav{
         width: 100%;
         height: 2rem;

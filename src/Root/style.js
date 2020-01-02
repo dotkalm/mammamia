@@ -23,5 +23,9 @@ export const MainStyle = styled.div`
 `
 
 export const DetailStyle = styled.div`
-    background-color: pink;
+    background-color: orange;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
 `

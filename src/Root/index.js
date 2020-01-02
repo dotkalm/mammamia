@@ -54,6 +54,7 @@ const Root = (props) => {
     console.log(props.sampleBundles) 
     return(
         <MainStyle width={`${props.dims.width}px`}> 
+        <Detail/>
         {sampleBundles}
         </MainStyle>
     )
