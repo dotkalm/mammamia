@@ -26,7 +26,9 @@ export const DetailStyle = styled.div`
     margin-top: 2rem;
     background-color: orange;
     position: fixed;
-    width: 100%;
+    margin-left: 30%;
+    margin-right: 30%;
+    width: 40%;
     height: 100%;
-    opacity: 0.5;
+    opacity: 0.2;
 `

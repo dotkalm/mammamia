@@ -1,5 +1,10 @@
 import styled from 'styled-components'
 
+export const OverlayPlusMenu = styled.header`
+    position: fixed;
+    width: 100%;
+`
+
 export const Overlay = styled.div`
     width: 200px;
     transform: ${props => props.transform ? props.transform : '200px'};
@@ -60,9 +65,8 @@ export const MainContentStyle = styled.div`
     }
 
 `
-export const HomeStyle = styled.header`
+export const HomeStyle = styled.div`
     width: 99%;
-    position: fixed;
     background-color: Pink;
     padding-left: .5%;
     padding-right: .5%;

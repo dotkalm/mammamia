@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { HomeStyle, Overlay } from './style'
+import { OverlayPlusMenu, HomeStyle, Overlay } from './style'
 import Mag from './mag'
 import PersonSelected from './personSelected'
 import Person from './person'
@@ -35,7 +35,7 @@ const NavBar = (props) => {
         }
     }
     return(
-        <div>
+        <OverlayPlusMenu>
             <HomeStyle> 
                 <nav>
                     <div className="top-left" id="home" onClick={props.onClick} >
@@ -88,7 +88,7 @@ const NavBar = (props) => {
                 <h1 className="Sack" >Shopping Sack</h1>
             </Overlay>
             : ''}
-        </div>
+        </OverlayPlusMenu>
     )
 }
 
