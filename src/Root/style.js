@@ -24,12 +24,12 @@ export const MainStyle = styled.div`
 `
 
 export const DetailStyle = styled.div`
+    background: ${props => props.image ? props.image : 'linear-gradient(red, orange)'};    
     margin-top: 2rem;
-    background-color: orange;
     position: fixed;
     margin-left: 30%;
     margin-right: 30%;
     width: 40%;
     height: 100%;
-    opacity: 0.2;
+    opacity: 1;
 `

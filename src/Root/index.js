@@ -71,6 +71,13 @@ const Root = (props) => {
                 Y: 0
             })
         }
+        if(index < 0){
+            setWheel({
+                X: 0,
+                Y: 0
+            })
+        }
+
         const garmet = Object.keys(props.sampleBundles)[index]
         if(garmet !== undefined){
             setGarmetDetail(garmet)

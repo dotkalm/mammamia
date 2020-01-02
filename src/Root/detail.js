@@ -3,10 +3,13 @@ import { DetailStyle } from './style'
 
 const Detail = (props) => {
     if(props.garmetDetail !== null){
-        console.log(props) 
+        let user = props.bundles[props.garmetDetail]
+        console.log(user.bundles[0].description)
         return(
-            <DetailStyle>
-                Hello
+            <DetailStyle 
+                image={`url(${user.imageURL}) no-repeat center `} 
+            >
+                { user.bundles[0].description }
             </DetailStyle>
         )
     } else {
