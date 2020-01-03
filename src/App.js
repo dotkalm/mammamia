@@ -148,7 +148,7 @@ function App(props) {
     const changeCategory = (cat) => {
         setCategory(cat)
     }
-    if(user){
+    if(Object.keys(user).length !== 0){
         return (
           <main>
             <NavBar 
@@ -202,7 +202,7 @@ function App(props) {
                             grabUid={grabUid}
                             />
                     }}/>
-                <Route exact path={ROUTES.SIGN_IN}
+                <Route exact path={'/'}
                     render={(props) => {
                         return<SignIn
                             user={user} 

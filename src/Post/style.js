@@ -118,6 +118,7 @@ export const BundlesStyle = styled.div`
 `
 
 export const StylePost = styled.div`
+    margin-top: 2rem;
     .selling{
         width: 100%;
         border-bottom: solid gray;

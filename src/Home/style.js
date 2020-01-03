@@ -16,6 +16,7 @@ export const BundleStyle = styled.div`
 `
 
 export const MainContentStyle = styled.div`
+    margin-top: 2rem;
     background-color: white;
     width: 98%;
     padding-left: 1%;

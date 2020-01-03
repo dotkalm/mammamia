@@ -2,7 +2,6 @@ import React,{ useState, useEffect } from 'react'
 import { withFirebase } from '../Firebase'
 import { 
     RootStyle, 
-    ImageStyle, 
     MainStyle
     } from './style'
 //import Detail from './detail'
@@ -38,7 +37,9 @@ const Root = (props) => {
             if(column >= col){
                 column = 0;
             }
+            
             column += 1
+
             return (
             <RootStyle key={`root${e}`}
                 image={`url(${user.imageURL}) no-repeat center `} 

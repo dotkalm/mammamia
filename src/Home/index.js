@@ -10,14 +10,12 @@ const Home = (props) => {
         props.changeCategory('home')
     } 
         return(
-        <div>
             <MainContentStyle>
-            { props.user.username ? `WELCOME ${props.user.username}` : ''
-            }            
-            { props.user.city ? ` Welcome from ${props.user.city}` : ''} 
+                { props.user.username ? `WELCOME ${props.user.username}` : ''
+                }            
+                { props.user.city ? ` Welcome from ${props.user.city}` : ''} 
+                <UserBundleWundles user={props.user} /> 
             </MainContentStyle>
-            <UserBundleWundles user={props.user} /> 
-        </div>
 
     )
 }

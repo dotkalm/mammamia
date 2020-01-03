@@ -16,7 +16,6 @@ const Post = (props) => {
         props.changeCategory('post')
     } 
     return(
-<div>
     <StylePost> 
         <div className='selling'>
             <span className="sellling_spacer"> 
@@ -32,7 +31,6 @@ const Post = (props) => {
                 updateUser={props.updateUser}
                 user={props.user}/> : ''}
         </StylePost>
-    </div>
     )
 }
 
