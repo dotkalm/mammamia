@@ -34,6 +34,10 @@ const NavBar = (props) => {
             props.history.push(props.ROUTES.ROOT)
         }
     }
+    const rootHome = () => {
+        props.history.push(props.ROUTES.ROOT)
+        setIsOpen(!isOpen)
+    }
     return(
         <OverlayPlusMenu>
             <HomeStyle> 
@@ -83,6 +87,7 @@ const NavBar = (props) => {
             {isOpen ? 
             <Overlay height={`${dims.height-40}px`}
                 transform={`translateX(${dims.width-200}px)`}> 
+                <h1 className="rootHome" onClick={rootHome}>Home</h1>
                 <h1 className="signInSignOut" onClick={signInSignOut}>{authState}</h1>
                 <h1 className="Browse" >Browse</h1>
                 <h1 className="Sack" >Shopping Sack</h1>
