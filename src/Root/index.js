@@ -42,9 +42,10 @@ const Root = (props) => {
 
             return (
             <RootStyle key={`root${e}`}
-                image={`url(${user.imageURL})`} 
-                column={column}
-                >
+            image={`url(${user.imageURL})`} 
+            column={column}
+            >
+                {props.sampleBundles[e].bundles[0].description}
             </RootStyle>
             )
         }else{ return null}
