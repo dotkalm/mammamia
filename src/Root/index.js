@@ -5,7 +5,7 @@ import {
     ImageStyle, 
     MainStyle
     } from './style'
-import Detail from './detail'
+//import Detail from './detail'
 
 const Root = (props) => {
     const handleResize = () => {
@@ -44,21 +44,16 @@ const Root = (props) => {
                 image={`url(${user.imageURL}) no-repeat center `} 
                 column={column}
                 >
-                    <ImageStyle key={e}
-                        image={`url(${user.imageURL}) no-repeat center `} 
-                        column={column}
-                        >
-                    </ImageStyle> 
             </RootStyle>
             )
-        }
+        }else{ return null}
     })
     useEffect(() => {
         window.addEventListener('resize', setCol(handleResize()));
         return () => {
             window.removeEventListener('resize', setCol(handleResize()));
         };
-    });
+    }, []);
     const wheelEventFunc = event => {
         setWheel({
             X: (wheel.X + event.deltaX/15),
@@ -83,10 +78,6 @@ const Root = (props) => {
         <MainStyle 
             width={`${props.dims.width}px`} 
             onWheel={wheelEventFunc}> 
-        <Detail 
-            bundles={props.sampleBundles} 
-            garmetDetail={garmetDetail}
-            wheel={wheel}/>
         {sampleBundles}
         </MainStyle>
     )
