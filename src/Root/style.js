@@ -15,7 +15,10 @@ export const RootStyle = styled.div`
     border: solid 1px black;
     height: 200px;
     grid-column: ${props => props.column ? props.column : 1};
-    background: ${props => props.image ? props.image : 'linear-gradient(red, orange)'};    
+    background-image: ${props => props.image ? props.image : 'linear-gradient(red, orange)'};    
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
 `
 export const MainStyle = styled.div`
     margin-top: 2rem;

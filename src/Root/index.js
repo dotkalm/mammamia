@@ -42,7 +42,7 @@ const Root = (props) => {
 
             return (
             <RootStyle key={`root${e}`}
-                image={`url(${user.imageURL}) no-repeat center `} 
+                image={`url(${user.imageURL})`} 
                 column={column}
                 >
             </RootStyle>
