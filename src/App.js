@@ -158,6 +158,7 @@ function App(props) {
                 onClick={onClick}
                 signOut={signOut}
                 user={user}
+                changeCategory={changeCategory}
                 category={category}/>
             <Switch>
                 <Route exact path={ROUTES.HOME}

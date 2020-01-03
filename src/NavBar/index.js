@@ -36,6 +36,7 @@ const NavBar = (props) => {
     }
     const rootHome = () => {
         props.history.push(props.ROUTES.ROOT)
+        props.changeCategory('Root')
         setIsOpen(!isOpen)
     }
     return(
