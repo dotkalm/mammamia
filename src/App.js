@@ -37,24 +37,7 @@ function App(props) {
     }
     
     const getSampleUsersSnapshot = () => {
-        props.firebase.db.collection("sample_users")
-            .onSnapshot(querySnapshot => {
-                const snapshotObj = {}
-                let index = 0
-                let promiseIndex = 0
-                querySnapshot.forEach((doc) => {
-                    const uid = doc.id
-                    const imageURLs = doc.data().bundles[0].image_paths
-                    if(imageURLs.length === 0){
-                        promiseIndex = promiseIndex + 1
-                    }
-                    console.log()
-                    snapshotObj[uid] = {...doc.data(), 'uid': uid}
-                    index = index + 1
-                })
-                setSampleBundles(snapshotObj)
-            })
-            
+               
     }
     if(Object.keys(sampleBundles).length === 0){
         getSampleUsersSnapshot() 
