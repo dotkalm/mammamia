@@ -6,7 +6,7 @@ import 'firebase/functions'
 
 
 const config = {
-    apiKey: "AIzaSyDS3KQLhOkFou_iteGgbR1lCNkCJbtTAZw",
+    apiKey: ,
     authDomain: "mamma-mia-1.firebaseapp.com",
     databaseURL: "https://mamma-mia-1.firebaseio.com",
     projectId: "mamma-mia-1",
