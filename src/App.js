@@ -13,22 +13,22 @@ import { withFirebase } from './Firebase'
 let getUidOnce = true
 
 function App(props) {
+    const [foundUser, setFoundUser] = useState(false)
     const [ category, setCategory ] = useState('')
     const [dims, setDim] = useState({width: window.innerWidth, height: window.innerHeight})
-    const [user, setUser ] = useState({}) 
+    const [user, setUser ] = useState(null) 
     const [userBundles, setUserBundles] = useState([])
     const [sampleBundles, setSampleBundles] = useState([]) 
 
     props.firebase.auth.onAuthStateChanged((user) => {
         if (user && getUidOnce) {
             getUidOnce = false
-            getBundleRefs(user.uid)
         }
     })
     
     const signOut = () => {
         props.firebase.auth.signOut()
-        setUser({})
+        setUser(null)
     }
 
     const getBundleRefs = (uid) => {
@@ -108,6 +108,15 @@ function App(props) {
     }
 
     useEffect(() => {
+        props.firebase.auth.onAuthStateChanged(user => {
+            if (user) {
+                setFoundUser(true)
+                getBundleRefs(user.uid)
+
+            } else {
+                setFoundUser(false)
+            }
+        });
         const handleResize = () => setDim({width: window.innerWidth, height: window.innerHeight});
         window.addEventListener('resize', handleResize);
         return () => {
@@ -131,7 +140,7 @@ function App(props) {
     const changeCategory = (cat) => {
         setCategory(cat)
     }
-    if(Object.keys(user).length !== 0){
+    if(foundUser && user !== null){
         return (
           <main>
             <NavBar 
@@ -171,6 +180,7 @@ function App(props) {
                     render={(props) => {
                         return<Root
                                 dims={dims}
+                                setSampleBundles={setSampleBundles}
                                 sampleBundles={sampleBundles}/>
                     }}/>
             </Switch>
